@@ -1,0 +1,827 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Abogaia — Registro de Abogado</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0a0c10;
+  --surface: #111318;
+  --surface2: #181c24;
+  --border: #1f2433;
+  --gold: #c9a84c;
+  --gold-light: #e8c97a;
+  --gold-dim: rgba(201,168,76,0.10);
+  --text: #e8e6e0;
+  --muted: #5a6070;
+  --muted2: #8892a0;
+  --success: #22c55e;
+  --danger: #ef4444;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  min-height: 100vh;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 80% 50% at 20% 10%, rgba(201,168,76,0.06) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 40% at 80% 90%, rgba(59,111,255,0.05) 0%, transparent 60%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* HEADER */
+header {
+  position: sticky; top: 0; z-index: 100;
+  background: rgba(10,12,16,0.85);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border);
+  padding: 0 2rem;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  text-decoration: none;
+}
+
+.logo-icon {
+  width: 36px; height: 36px;
+  background: linear-gradient(135deg, var(--gold), #8a6020);
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Playfair Display', serif;
+  font-weight: 700; color: #0a0c10; font-size: 1rem;
+}
+
+.logo-name {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.4rem; color: var(--gold); font-weight: 700;
+}
+
+.header-link {
+  font-size: 0.82rem; color: var(--muted2);
+  text-decoration: none; transition: color 0.2s;
+}
+.header-link:hover { color: var(--gold); }
+
+/* STEPS */
+.steps-bar {
+  position: relative; z-index: 1;
+  max-width: 680px; margin: 2.5rem auto 0;
+  padding: 0 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+}
+
+.step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+  position: relative;
+  flex: 1;
+}
+
+.step-circle {
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  background: var(--surface);
+  border: 2px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.8rem; font-weight: 600; color: var(--muted);
+  transition: all 0.3s; z-index: 2;
+  position: relative;
+}
+
+.step.active .step-circle {
+  border-color: var(--gold);
+  background: var(--gold-dim);
+  color: var(--gold);
+}
+
+.step.done .step-circle {
+  background: var(--gold);
+  border-color: var(--gold);
+  color: #0a0c10;
+}
+
+.step-label {
+  font-size: 0.72rem;
+  color: var(--muted);
+  text-align: center;
+  white-space: nowrap;
+}
+
+.step.active .step-label { color: var(--gold); }
+.step.done .step-label { color: var(--muted2); }
+
+.step-line {
+  flex: 1;
+  height: 2px;
+  background: var(--border);
+  margin-top: -22px;
+  transition: background 0.3s;
+}
+
+.step-line.done { background: var(--gold); }
+
+/* MAIN */
+.main {
+  position: relative; z-index: 1;
+  max-width: 680px;
+  margin: 2rem auto 4rem;
+  padding: 0 1.5rem;
+}
+
+.form-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  overflow: hidden;
+}
+
+.form-card-header {
+  padding: 1.75rem 2rem 1.25rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.form-card-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.4rem; font-weight: 700;
+  margin-bottom: 0.3rem;
+}
+
+.form-card-sub {
+  font-size: 0.85rem; color: var(--muted2);
+}
+
+.form-card-body { padding: 1.75rem 2rem; }
+
+/* FORM ELEMENTS */
+.form-group { margin-bottom: 1.25rem; }
+
+.form-label {
+  display: block;
+  font-size: 0.75rem;
+  color: var(--muted2);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+}
+
+.form-label span { color: var(--danger); }
+
+.form-input, .form-select, .form-textarea {
+  width: 100%;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 0.8rem 1rem;
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.9rem;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.form-input:focus, .form-select:focus, .form-textarea:focus {
+  border-color: rgba(201,168,76,0.5);
+  background: rgba(24,28,36,0.8);
+}
+
+.form-input::placeholder, .form-textarea::placeholder { color: var(--muted); }
+.form-select option { background: #181c24; }
+.form-textarea { resize: vertical; min-height: 100px; line-height: 1.6; }
+
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+.form-row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; }
+
+/* PHOTO UPLOAD */
+.photo-upload {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  margin-bottom: 1.25rem;
+}
+
+.photo-preview {
+  width: 72px; height: 72px;
+  border-radius: 50%;
+  background: var(--surface2);
+  border: 2px dashed var(--border);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.8rem;
+  flex-shrink: 0;
+  overflow: hidden;
+  transition: border-color 0.2s;
+  cursor: pointer;
+}
+
+.photo-preview:hover { border-color: var(--gold); }
+
+.photo-upload-info { flex: 1; }
+.photo-upload-title { font-size: 0.9rem; font-weight: 500; margin-bottom: 0.25rem; }
+.photo-upload-sub { font-size: 0.78rem; color: var(--muted2); margin-bottom: 0.6rem; }
+
+.upload-btn {
+  padding: 0.45rem 1rem;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--muted2);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.upload-btn:hover { border-color: var(--gold); color: var(--gold); }
+
+/* SPECIALTIES */
+.specialties-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.6rem;
+  margin-bottom: 0.5rem;
+}
+
+.spec-pill {
+  padding: 0.55rem 0.75rem;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  font-size: 0.8rem;
+  color: var(--muted2);
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: center;
+  user-select: none;
+}
+
+.spec-pill:hover { border-color: rgba(201,168,76,0.3); color: var(--text); }
+.spec-pill.selected { border-color: var(--gold); color: var(--gold); background: var(--gold-dim); }
+
+/* ESTADOS */
+.estados-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.5rem;
+}
+
+.estado-pill {
+  padding: 0.4rem 0.5rem;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-size: 0.75rem;
+  color: var(--muted2);
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: center;
+  user-select: none;
+}
+
+.estado-pill:hover { border-color: rgba(201,168,76,0.3); }
+.estado-pill.selected { border-color: var(--gold); color: var(--gold); background: var(--gold-dim); }
+
+/* PAYMENT */
+.plan-card {
+  background: linear-gradient(135deg, rgba(201,168,76,0.1), rgba(201,168,76,0.04));
+  border: 1px solid rgba(201,168,76,0.25);
+  border-radius: 14px;
+  padding: 1.25rem;
+  margin-bottom: 1.5rem;
+}
+
+.plan-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1rem;
+}
+
+.plan-name {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.2rem; color: var(--gold);
+}
+
+.plan-price {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.5rem; color: var(--gold); font-weight: 700;
+}
+
+.plan-period { font-size: 0.78rem; color: var(--muted2); }
+
+.plan-features {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.4rem;
+}
+
+.plan-feature {
+  display: flex; align-items: center; gap: 0.4rem;
+  font-size: 0.8rem; color: var(--muted2);
+}
+
+.plan-feature .check { color: var(--success); }
+
+/* CARD INPUT */
+.card-input-group {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+  margin-bottom: 1rem;
+  transition: border-color 0.2s;
+}
+
+.card-input-group:focus-within { border-color: rgba(201,168,76,0.5); }
+
+.card-input-row {
+  display: flex;
+  align-items: center;
+  padding: 0.8rem 1rem;
+  gap: 0.75rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.card-input-row:last-child { border-bottom: none; }
+
+.card-input-label {
+  font-size: 0.78rem; color: var(--muted);
+  width: 110px; flex-shrink: 0;
+}
+
+.card-input-field {
+  flex: 1; background: none; border: none;
+  color: var(--text); font-family: 'DM Sans', sans-serif;
+  font-size: 0.9rem; outline: none;
+}
+
+.card-input-field::placeholder { color: var(--muted); }
+
+.card-icons { display: flex; gap: 0.4rem; align-items: center; }
+.card-icon {
+  padding: 0.2rem 0.5rem;
+  background: var(--border);
+  border-radius: 4px;
+  font-size: 0.7rem;
+  color: var(--muted2);
+}
+
+/* SECURITY BADGE */
+.security-note {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.78rem;
+  color: var(--muted2);
+  margin-bottom: 1.5rem;
+}
+
+/* TERMS */
+.terms-check {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+  cursor: pointer;
+}
+
+.terms-check input { margin-top: 3px; accent-color: var(--gold); cursor: pointer; }
+.terms-text { font-size: 0.82rem; color: var(--muted2); line-height: 1.5; }
+.terms-text a { color: var(--gold); text-decoration: none; }
+
+/* BUTTONS */
+.btn-row {
+  display: flex;
+  gap: 1rem;
+  justify-content: space-between;
+  margin-top: 1.75rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border);
+}
+
+.btn-back {
+  padding: 0.85rem 1.75rem;
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  color: var(--muted2);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-back:hover { border-color: var(--muted2); color: var(--text); }
+
+.btn-next {
+  flex: 1;
+  padding: 0.85rem 2rem;
+  background: var(--gold);
+  border: none;
+  border-radius: 12px;
+  color: #0a0c10;
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-next:hover { background: var(--gold-light); }
+
+/* SUCCESS */
+.success-screen {
+  text-align: center;
+  padding: 3rem 2rem;
+  display: none;
+}
+
+.success-icon {
+  width: 80px; height: 80px;
+  background: rgba(34,197,94,0.1);
+  border: 2px solid rgba(34,197,94,0.3);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 2rem;
+  margin: 0 auto 1.5rem;
+}
+
+.success-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.8rem; margin-bottom: 0.75rem;
+}
+
+.success-sub {
+  color: var(--muted2); font-size: 0.9rem;
+  line-height: 1.6; max-width: 400px; margin: 0 auto 2rem;
+}
+
+.dashboard-btn {
+  padding: 0.9rem 2.5rem;
+  background: var(--gold);
+  border: none; border-radius: 12px;
+  color: #0a0c10; font-family: 'DM Sans', sans-serif;
+  font-weight: 600; font-size: 0.95rem;
+  cursor: pointer; transition: all 0.2s;
+  text-decoration: none; display: inline-block;
+}
+
+.dashboard-btn:hover { background: var(--gold-light); }
+
+/* ANIMATIONS */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.form-step { animation: fadeUp 0.3s forwards; }
+</style>
+</head>
+<body>
+
+<header>
+  <a class="logo" href="index.html">
+    <div class="logo-icon">A</div>
+    <span class="logo-name">Abogaia</span>
+  </a>
+  <a class="header-link" href="index.html">← Volver al inicio</a>
+</header>
+
+<!-- STEPS -->
+<div class="steps-bar">
+  <div class="step active" id="step1">
+    <div class="step-circle">1</div>
+    <div class="step-label">Datos personales</div>
+  </div>
+  <div class="step-line" id="line1"></div>
+  <div class="step" id="step2">
+    <div class="step-circle">2</div>
+    <div class="step-label">Perfil profesional</div>
+  </div>
+  <div class="step-line" id="line2"></div>
+  <div class="step" id="step3">
+    <div class="step-circle">3</div>
+    <div class="step-label">Suscripción</div>
+  </div>
+  <div class="step-line" id="line3"></div>
+  <div class="step" id="step4">
+    <div class="step-circle">✓</div>
+    <div class="step-label">¡Listo!</div>
+  </div>
+</div>
+
+<div class="main">
+
+  <!-- PASO 1 — DATOS PERSONALES -->
+  <div class="form-card form-step" id="paso1">
+    <div class="form-card-header">
+      <div class="form-card-title">Datos personales</div>
+      <div class="form-card-sub">Esta información es confidencial y solo se usa para verificar tu identidad.</div>
+    </div>
+    <div class="form-card-body">
+
+      <div class="photo-upload">
+        <div class="photo-preview" id="photoPreview">👤</div>
+        <div class="photo-upload-info">
+          <div class="photo-upload-title">Foto de perfil</div>
+          <div class="photo-upload-sub">Sube una foto profesional. JPG o PNG, máx. 5MB.</div>
+          <button class="upload-btn" onclick="document.getElementById('photoInput').click()">📎 Subir foto</button>
+          <input type="file" id="photoInput" accept="image/*" style="display:none" onchange="previewPhoto(this)">
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Nombre(s) <span>*</span></label>
+          <input class="form-input" placeholder="Patricia">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Apellidos <span>*</span></label>
+          <input class="form-input" placeholder="Morales Vega">
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">CURP <span>*</span></label>
+          <input class="form-input" placeholder="MOMP850312MOCRLR09" maxlength="18" style="text-transform:uppercase">
+        </div>
+        <div class="form-group">
+          <label class="form-label">RFC</label>
+          <input class="form-input" placeholder="MOMP850312AB1" style="text-transform:uppercase">
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Correo electrónico <span>*</span></label>
+          <input class="form-input" type="email" placeholder="patricia@despacho.mx">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Teléfono celular <span>*</span></label>
+          <input class="form-input" placeholder="+52 951 234 5678">
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Contraseña <span>*</span></label>
+          <input class="form-input" type="password" placeholder="Mínimo 8 caracteres">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Confirmar contraseña <span>*</span></label>
+          <input class="form-input" type="password" placeholder="Repite tu contraseña">
+        </div>
+      </div>
+
+      <div class="btn-row">
+        <div></div>
+        <button class="btn-next" onclick="goTo(2)">Continuar → Perfil profesional</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- PASO 2 — PERFIL PROFESIONAL -->
+  <div class="form-card form-step" id="paso2" style="display:none">
+    <div class="form-card-header">
+      <div class="form-card-title">Perfil profesional</div>
+      <div class="form-card-sub">Esta información será visible para los clientes que busquen abogado en Abogaia.</div>
+    </div>
+    <div class="form-card-body">
+
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Cédula profesional <span>*</span></label>
+          <input class="form-input" placeholder="8472910">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Años de experiencia <span>*</span></label>
+          <input class="form-input" type="number" placeholder="15" min="0" max="60">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Especialidad(es) <span>*</span></label>
+        <div class="specialties-grid">
+          <div class="spec-pill" onclick="togglePill(this)">🛡️ Seguros</div>
+          <div class="spec-pill" onclick="togglePill(this)">⚖️ Penal</div>
+          <div class="spec-pill" onclick="togglePill(this)">💼 Laboral</div>
+          <div class="spec-pill" onclick="togglePill(this)">🏠 Familiar</div>
+          <div class="spec-pill" onclick="togglePill(this)">📋 Civil</div>
+          <div class="spec-pill" onclick="togglePill(this)">🏢 Mercantil</div>
+          <div class="spec-pill" onclick="togglePill(this)">🏛️ Amparo</div>
+          <div class="spec-pill" onclick="togglePill(this)">🏗️ Inmobiliario</div>
+          <div class="spec-pill" onclick="togglePill(this)">📊 Fiscal</div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Estado(s) donde ejerce <span>*</span></label>
+        <div class="estados-grid">
+          <div class="estado-pill" onclick="togglePill(this)">CDMX</div>
+          <div class="estado-pill" onclick="togglePill(this)">Jalisco</div>
+          <div class="estado-pill" onclick="togglePill(this)">Oaxaca</div>
+          <div class="estado-pill" onclick="togglePill(this)">Nuevo León</div>
+          <div class="estado-pill" onclick="togglePill(this)">Puebla</div>
+          <div class="estado-pill" onclick="togglePill(this)">Veracruz</div>
+          <div class="estado-pill" onclick="togglePill(this)">Guanajuato</div>
+          <div class="estado-pill" onclick="togglePill(this)">Chiapas</div>
+          <div class="estado-pill" onclick="togglePill(this)">Estado Méx</div>
+          <div class="estado-pill" onclick="togglePill(this)">Michoacán</div>
+          <div class="estado-pill" onclick="togglePill(this)">Sonora</div>
+          <div class="estado-pill" onclick="togglePill(this)">Todo México</div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Descripción de tu perfil <span>*</span></label>
+        <textarea class="form-textarea" placeholder="Cuéntale a los clientes sobre tu experiencia, casos que has resuelto y por qué eres el abogado ideal para ellos..."></textarea>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Nombre del despacho (opcional)</label>
+        <input class="form-input" placeholder="Despacho Morales & Asociados">
+      </div>
+
+      <div class="btn-row">
+        <button class="btn-back" onclick="goTo(1)">← Atrás</button>
+        <button class="btn-next" onclick="goTo(3)">Continuar → Suscripción</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- PASO 3 — SUSCRIPCIÓN Y PAGO -->
+  <div class="form-card form-step" id="paso3" style="display:none">
+    <div class="form-card-header">
+      <div class="form-card-title">Suscripción y pago</div>
+      <div class="form-card-sub">Elige tu plan y activa tu cuenta para empezar a recibir clientes.</div>
+    </div>
+    <div class="form-card-body">
+
+      <div class="plan-card">
+        <div class="plan-header">
+          <div>
+            <div class="plan-name">Plan Pro ⭐</div>
+            <div style="font-size:0.8rem;color:var(--muted2);margin-top:0.2rem;">El más popular entre abogados Abogaia</div>
+          </div>
+          <div style="text-align:right">
+            <div class="plan-price">$1,000 <span style="font-size:1rem;font-weight:400">MXN</span></div>
+            <div class="plan-period">por mes · cancela cuando quieras</div>
+          </div>
+        </div>
+        <div class="plan-features">
+          <div class="plan-feature"><span class="check">✓</span> Leads ilimitados</div>
+          <div class="plan-feature"><span class="check">✓</span> Perfil destacado</div>
+          <div class="plan-feature"><span class="check">✓</span> Mensajería con clientes</div>
+          <div class="plan-feature"><span class="check">✓</span> Estadísticas avanzadas</div>
+          <div class="plan-feature"><span class="check">✓</span> Soporte prioritario</div>
+          <div class="plan-feature"><span class="check">✓</span> Badge verificado ✅</div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Datos de tarjeta <span>*</span></label>
+        <div class="card-input-group">
+          <div class="card-input-row">
+            <span class="card-input-label">Número</span>
+            <input class="card-input-field" placeholder="1234 5678 9012 3456" maxlength="19" oninput="formatCard(this)">
+            <div class="card-icons">
+              <span class="card-icon">VISA</span>
+              <span class="card-icon">MC</span>
+            </div>
+          </div>
+          <div class="card-input-row">
+            <span class="card-input-label">Nombre</span>
+            <input class="card-input-field" placeholder="Como aparece en la tarjeta">
+          </div>
+          <div class="card-input-row">
+            <span class="card-input-label">Vencimiento</span>
+            <input class="card-input-field" placeholder="MM/AA" maxlength="5" oninput="formatExp(this)">
+            <span class="card-input-label" style="text-align:right">CVV</span>
+            <input class="card-input-field" placeholder="•••" maxlength="4" type="password" style="max-width:60px">
+          </div>
+        </div>
+      </div>
+
+      <div class="security-note">
+        🔒 Pago seguro con encriptación SSL · Tus datos están protegidos
+      </div>
+
+      <label class="terms-check">
+        <input type="checkbox" id="termsCheck">
+        <span class="terms-text">
+          Acepto los <a href="#">Términos y Condiciones</a> y el <a href="#">Aviso de Privacidad</a> de Abogaia. Entiendo que se realizará un cobro mensual de $1,000 MXN hasta que cancele mi suscripción.
+        </span>
+      </label>
+
+      <div class="btn-row">
+        <button class="btn-back" onclick="goTo(2)">← Atrás</button>
+        <button class="btn-next" onclick="completar()">🔒 Activar mi cuenta — $1,000 MXN</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- PASO 4 — ÉXITO -->
+  <div class="form-card" id="paso4" style="display:none">
+    <div class="success-screen" id="successScreen">
+      <div class="success-icon">✅</div>
+      <div class="success-title">¡Bienvenido a Abogaia!</div>
+      <p class="success-sub">
+        Tu cuenta ha sido activada exitosamente. Ya puedes empezar a recibir clientes que la IA de Abogaia asigne a tu perfil.
+      </p>
+      <a href="abogaia-dashboard.html" class="dashboard-btn">Ir a mi panel →</a>
+    </div>
+  </div>
+
+</div>
+
+<script>
+let currentStep = 1;
+
+function goTo(step) {
+  document.getElementById('paso' + currentStep).style.display = 'none';
+  document.getElementById('paso' + step).style.display = 'block';
+
+  // Update steps bar
+  for (let i = 1; i <= 4; i++) {
+    const el = document.getElementById('step' + i);
+    el.classList.remove('active', 'done');
+    if (i < step) el.classList.add('done');
+    if (i === step) el.classList.add('active');
+  }
+
+  for (let i = 1; i <= 3; i++) {
+    const line = document.getElementById('line' + i);
+    line.classList.toggle('done', i < step);
+  }
+
+  currentStep = step;
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function completar() {
+  if (!document.getElementById('termsCheck').checked) {
+    alert('Por favor acepta los términos y condiciones para continuar.');
+    return;
+  }
+  goTo(4);
+  document.getElementById('paso4').style.display = 'block';
+  document.getElementById('successScreen').style.display = 'block';
+
+  // Mark step 4 done
+  document.getElementById('step4').classList.remove('active');
+  document.getElementById('step4').classList.add('done');
+  document.getElementById('line3').classList.add('done');
+}
+
+function togglePill(el) {
+  el.classList.toggle('selected');
+}
+
+function previewPhoto(input) {
+  if (input.files && input.files[0]) {
+    const reader = new FileReader();
+    reader.onload = e => {
+      const preview = document.getElementById('photoPreview');
+      preview.innerHTML = `<img src="${e.target.result}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`;
+    };
+    reader.readAsDataURL(input.files[0]);
+  }
+}
+
+function formatCard(input) {
+  let val = input.value.replace(/\D/g, '').substring(0, 16);
+  input.value = val.replace(/(.{4})/g, '$1 ').trim();
+}
+
+function formatExp(input) {
+  let val = input.value.replace(/\D/g, '').substring(0, 4);
+  if (val.length >= 2) val = val.substring(0,2) + '/' + val.substring(2);
+  input.value = val;
+}
+</script>
+</body>
+</html>
