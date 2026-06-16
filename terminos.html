@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Abogaia — Términos y Condiciones</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --navy: #0f2347;
+  --gold: #c9a84c;
+  --text: #1a2540;
+  --muted: #4a5980;
+  --border: #dce3f0;
+  --bg: #f8f9fc;
+  --surface: #ffffff;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.95rem;
+  line-height: 1.75;
+}
+
+nav {
+  background: var(--navy);
+  padding: 0 2rem;
+  height: 60px;
+  display: flex; align-items: center; justify-content: space-between;
+  position: sticky; top: 0; z-index: 100;
+}
+
+.nav-logo { display: flex; align-items: center; gap: 0.6rem; text-decoration: none; }
+.logo-icon {
+  width: 32px; height: 32px;
+  background: linear-gradient(135deg, var(--gold), #8a6020);
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Playfair Display', serif;
+  font-weight: 700; color: #0f2347; font-size: 0.9rem;
+}
+.logo-name { font-family: 'Playfair Display', serif; font-size: 1.3rem; color: var(--gold); font-weight: 700; }
+.nav-back { font-size: 0.82rem; color: rgba(255,255,255,0.6); text-decoration: none; transition: color 0.2s; }
+.nav-back:hover { color: var(--gold); }
+
+.doc-hero {
+  background: linear-gradient(135deg, var(--navy) 0%, #1a3a6b 100%);
+  padding: 3.5rem 2rem; text-align: center;
+}
+
+.doc-badge {
+  display: inline-block; font-size: 0.72rem;
+  letter-spacing: 0.15em; text-transform: uppercase;
+  color: var(--gold); background: rgba(201,168,76,0.12);
+  border: 1px solid rgba(201,168,76,0.25);
+  padding: 0.3rem 0.9rem; border-radius: 100px; margin-bottom: 1rem;
+}
+
+.doc-title { font-family: 'Playfair Display', serif; font-size: 2rem; font-weight: 700; color: #ffffff; margin-bottom: 0.5rem; }
+.doc-meta { font-size: 0.82rem; color: rgba(255,255,255,0.5); }
+
+.layout {
+  max-width: 900px; margin: 0 auto; padding: 3rem 2rem;
+  display: grid; grid-template-columns: 220px 1fr; gap: 3rem; align-items: start;
+}
+
+.index-box {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 14px; padding: 1.25rem;
+  position: sticky; top: 80px;
+}
+
+.index-title { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.12em; color: var(--muted); font-weight: 600; margin-bottom: 0.75rem; }
+
+.index-list { list-style: none; display: flex; flex-direction: column; gap: 0.25rem; }
+.index-list a { font-size: 0.8rem; color: var(--muted); text-decoration: none; padding: 0.35rem 0.5rem; border-radius: 6px; display: block; transition: all 0.2s; line-height: 1.4; }
+.index-list a:hover { color: var(--navy); background: rgba(15,35,71,0.05); }
+
+.doc-section { margin-bottom: 2.5rem; padding-bottom: 2.5rem; border-bottom: 1px solid var(--border); }
+.doc-section:last-child { border-bottom: none; margin-bottom: 0; }
+
+.section-num { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.15em; color: var(--gold); font-weight: 600; margin-bottom: 0.4rem; }
+.section-title { font-family: 'Playfair Display', serif; font-size: 1.25rem; font-weight: 700; color: var(--navy); margin-bottom: 1rem; }
+
+.doc-content p { color: var(--text); margin-bottom: 0.9rem; }
+.doc-content p:last-child { margin-bottom: 0; }
+
+.doc-list { list-style: none; margin: 0.75rem 0; display: flex; flex-direction: column; gap: 0.5rem; }
+.doc-list li { display: flex; gap: 0.75rem; align-items: flex-start; font-size: 0.9rem; color: var(--text); }
+.doc-list li::before { content: '•'; color: var(--gold); font-weight: 700; flex-shrink: 0; margin-top: 0.1rem; }
+
+.highlight-box {
+  background: rgba(15,35,71,0.04); border-left: 3px solid var(--navy);
+  border-radius: 0 10px 10px 0; padding: 1rem 1.25rem; margin: 1rem 0;
+  font-size: 0.88rem; color: var(--muted); line-height: 1.7;
+}
+
+.gold-box {
+  background: rgba(201,168,76,0.08); border: 1px solid rgba(201,168,76,0.2);
+  border-radius: 10px; padding: 1rem 1.25rem; margin: 1rem 0;
+  font-size: 0.88rem; line-height: 1.7;
+}
+
+.warning-box {
+  background: rgba(239,68,68,0.05); border: 1px solid rgba(239,68,68,0.2);
+  border-radius: 10px; padding: 1rem 1.25rem; margin: 1rem 0;
+  font-size: 0.88rem; color: #991b1b; line-height: 1.7;
+}
+
+footer {
+  background: var(--navy); padding: 1.5rem 2rem;
+  text-align: center; font-size: 0.78rem; color: rgba(255,255,255,0.45);
+}
+footer a { color: var(--gold); text-decoration: none; margin: 0 0.5rem; }
+
+@media (max-width: 768px) {
+  .layout { grid-template-columns: 1fr; }
+  .index-box { position: static; }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-logo" href="landing.html">
+    <div class="logo-icon">A</div>
+    <span class="logo-name">Abogaia</span>
+  </a>
+  <a class="nav-back" href="landing.html">← Volver al inicio</a>
+</nav>
+
+<div class="doc-hero">
+  <div class="doc-badge">Documento legal</div>
+  <h1 class="doc-title">Términos y Condiciones</h1>
+  <p class="doc-meta">Última actualización: junio 2026 · Aplicables en México</p>
+</div>
+
+<div class="layout">
+
+  <aside class="index-box">
+    <div class="index-title">Contenido</div>
+    <ul class="index-list">
+      <li><a href="#definiciones">1. Definiciones</a></li>
+      <li><a href="#aceptacion">2. Aceptación</a></li>
+      <li><a href="#servicio">3. El servicio</a></li>
+      <li><a href="#abogados">4. Abogados</a></li>
+      <li><a href="#clientes">5. Clientes</a></li>
+      <li><a href="#pagos">6. Pagos</a></li>
+      <li><a href="#prohibiciones">7. Prohibiciones</a></li>
+      <li><a href="#responsabilidad">8. Responsabilidad</a></li>
+      <li><a href="#propiedad">9. Propiedad intelectual</a></li>
+      <li><a href="#cancelacion">10. Cancelación</a></li>
+      <li><a href="#modificaciones">11. Modificaciones</a></li>
+      <li><a href="#jurisdiccion">12. Jurisdicción</a></li>
+      <li><a href="#contacto">13. Contacto</a></li>
+    </ul>
+  </aside>
+
+  <div class="doc-content">
+
+    <div class="gold-box">
+      Bienvenido a <strong>Abogaia</strong>. Al acceder o usar nuestra plataforma, aceptas quedar vinculado por estos Términos y Condiciones. Si no estás de acuerdo con alguno de ellos, no debes utilizar la plataforma.
+    </div>
+
+    <!-- 1 -->
+    <div class="doc-section" id="definiciones">
+      <div class="section-num">Sección 01</div>
+      <h2 class="section-title">Definiciones</h2>
+      <ul class="doc-list">
+        <li><strong>"Abogaia" / "la Plataforma":</strong> El sitio web abogaiamx.com y todos sus servicios asociados.</li>
+        <li><strong>"Abogado":</strong> Profesional del derecho con cédula profesional vigente registrado en la plataforma mediante suscripción.</li>
+        <li><strong>"Cliente":</strong> Persona que utiliza la plataforma para buscar asesoría o representación legal.</li>
+        <li><strong>"Usuario":</strong> Cualquier persona que acceda a la plataforma, sea abogado o cliente.</li>
+        <li><strong>"Suscripción":</strong> El pago mensual realizado por el abogado para acceder a los beneficios de la plataforma.</li>
+        <li><strong>"Lead" / "Caso":</strong> La información de un cliente con un problema legal que la plataforma asigna a un abogado.</li>
+      </ul>
+    </div>
+
+    <!-- 2 -->
+    <div class="doc-section" id="aceptacion">
+      <div class="section-num">Sección 02</div>
+      <h2 class="section-title">Aceptación de los términos</h2>
+      <p>Al registrarte, acceder o utilizar Abogaia, confirmas que:</p>
+      <ul class="doc-list">
+        <li>Tienes al menos 18 años de edad</li>
+        <li>Has leído, entendido y aceptado estos Términos y Condiciones</li>
+        <li>Has leído y aceptado nuestro Aviso de Privacidad</li>
+        <li>Tienes capacidad legal para celebrar contratos conforme a la legislación mexicana</li>
+      </ul>
+      <p>El uso de la plataforma constituye aceptación plena de estos términos.</p>
+    </div>
+
+    <!-- 3 -->
+    <div class="doc-section" id="servicio">
+      <div class="section-num">Sección 03</div>
+      <h2 class="section-title">Descripción del servicio</h2>
+      <p>Abogaia es una <strong>plataforma de intermediación tecnológica</strong> que conecta a personas con problemas legales con abogados en México mediante inteligencia artificial.</p>
+
+      <div class="warning-box">
+        ⚠️ <strong>Importante:</strong> Abogaia NO es un despacho jurídico, NO presta servicios legales directamente y NO es responsable de los consejos, representación o resultados obtenidos en la relación entre clientes y abogados. La relación legal se establece exclusivamente entre el cliente y el abogado.
+      </div>
+
+      <p>Abogaia actúa únicamente como intermediario tecnológico y no tiene responsabilidad sobre el resultado de los casos, honorarios pactados ni conducta de los abogados registrados.</p>
+    </div>
+
+    <!-- 4 -->
+    <div class="doc-section" id="abogados">
+      <div class="section-num">Sección 04</div>
+      <h2 class="section-title">Condiciones para abogados</h2>
+
+      <p>Para registrarse como abogado en Abogaia, el profesional debe:</p>
+      <ul class="doc-list">
+        <li>Contar con cédula profesional vigente emitida por la Dirección General de Profesiones</li>
+        <li>Proporcionar información veraz y actualizada en su perfil</li>
+        <li>Mantener una suscripción mensual activa</li>
+        <li>Responder a los casos asignados con profesionalismo y prontitud</li>
+        <li>Cumplir con el Código de Ética Profesional de su colegio de abogados</li>
+        <li>No compartir información confidencial de los clientes con terceros</li>
+      </ul>
+
+      <p>El abogado es el único responsable de la calidad, legalidad y resultado de los servicios jurídicos que preste. Abogaia se reserva el derecho de suspender o eliminar cuentas de abogados que reciban quejas reiteradas o que incumplan estos términos.</p>
+
+      <div class="highlight-box">
+        Abogaia puede verificar la autenticidad de la cédula profesional mediante consulta al Registro Nacional de Profesionistas de la SEP.
+      </div>
+    </div>
+
+    <!-- 5 -->
+    <div class="doc-section" id="clientes">
+      <div class="section-num">Sección 05</div>
+      <h2 class="section-title">Condiciones para clientes</h2>
+      <p>Al usar la plataforma como cliente, aceptas:</p>
+      <ul class="doc-list">
+        <li>Proporcionar información veraz sobre tu situación legal</li>
+        <li>No usar la plataforma para fines fraudulentos o ilícitos</li>
+        <li>Que la información que compartes puede ser analizada por IA para encontrar el abogado adecuado</li>
+        <li>Que Abogaia no garantiza resultados específicos en tu caso legal</li>
+        <li>Que la relación contractual se establece directamente con el abogado, no con Abogaia</li>
+      </ul>
+      <p>El uso de la plataforma para clientes es <strong>gratuito</strong>. Abogaia no cobra comisiones sobre honorarios pactados entre clientes y abogados.</p>
+    </div>
+
+    <!-- 6 -->
+    <div class="doc-section" id="pagos">
+      <div class="section-num">Sección 06</div>
+      <h2 class="section-title">Pagos y suscripciones</h2>
+
+      <p><strong>Plan Básico:</strong> $500 MXN mensuales · hasta 5 leads por mes.</p>
+      <p><strong>Plan Pro:</strong> $1,000 MXN mensuales · leads ilimitados y perfil destacado.</p>
+
+      <ul class="doc-list">
+        <li>Los pagos se realizan mensualmente de forma anticipada</li>
+        <li>Los precios incluyen IVA cuando aplique conforme a la legislación vigente</li>
+        <li>Abogaia se reserva el derecho de modificar precios con previo aviso de 30 días</li>
+        <li>No se realizan reembolsos por períodos parciales una vez iniciado el mes</li>
+        <li>El abogado puede cancelar su suscripción en cualquier momento desde su panel</li>
+        <li>La cancelación entra en vigor al final del período mensual pagado</li>
+        <li>Los datos de pago son procesados por proveedores certificados PCI-DSS</li>
+      </ul>
+
+      <div class="highlight-box">
+        En caso de fallo en el cobro, Abogaia notificará al abogado y otorgará un período de gracia de 5 días para regularizar el pago antes de suspender el acceso.
+      </div>
+    </div>
+
+    <!-- 7 -->
+    <div class="doc-section" id="prohibiciones">
+      <div class="section-num">Sección 07</div>
+      <h2 class="section-title">Conductas prohibidas</h2>
+      <p>Está estrictamente prohibido para todos los usuarios:</p>
+      <ul class="doc-list">
+        <li>Proporcionar información falsa o engañosa en el registro o en los casos</li>
+        <li>Usar la plataforma para actividades ilícitas o contrarias a la moral</li>
+        <li>Intentar acceder sin autorización a cuentas de otros usuarios</li>
+        <li>Reproducir, copiar o distribuir el contenido de la plataforma sin autorización</li>
+        <li>Usar bots, scrapers o medios automatizados no autorizados</li>
+        <li>Publicar contenido ofensivo, discriminatorio o difamatorio</li>
+        <li>Contactar a usuarios fuera de la plataforma para evadir comisiones o pagos</li>
+        <li>Suplantar la identidad de otro abogado o profesional</li>
+      </ul>
+
+      <div class="warning-box">
+        El incumplimiento de estas prohibiciones puede resultar en la suspensión inmediata de la cuenta sin derecho a reembolso, y podría derivar en acciones legales.
+      </div>
+    </div>
+
+    <!-- 8 -->
+    <div class="doc-section" id="responsabilidad">
+      <div class="section-num">Sección 08</div>
+      <h2 class="section-title">Limitación de responsabilidad</h2>
+      <p>Abogaia no será responsable por:</p>
+      <ul class="doc-list">
+        <li>El resultado de los casos legales atendidos por abogados de la plataforma</li>
+        <li>Los honorarios pactados entre clientes y abogados</li>
+        <li>La conducta profesional o personal de los abogados registrados</li>
+        <li>Interrupciones del servicio por mantenimiento, fallas técnicas o causas de fuerza mayor</li>
+        <li>Daños directos, indirectos o consecuentes derivados del uso de la plataforma</li>
+        <li>La veracidad de la información proporcionada por los usuarios</li>
+      </ul>
+      <p>La responsabilidad máxima de Abogaia ante cualquier reclamación no excederá el monto pagado por el usuario en los últimos 3 meses de suscripción.</p>
+    </div>
+
+    <!-- 9 -->
+    <div class="doc-section" id="propiedad">
+      <div class="section-num">Sección 09</div>
+      <h2 class="section-title">Propiedad intelectual</h2>
+      <p>Todo el contenido de Abogaia — incluyendo el nombre, logo, diseño, código, textos, algoritmos de inteligencia artificial y bases de datos — es propiedad exclusiva de Abogaia y está protegido por las leyes mexicanas e internacionales de propiedad intelectual.</p>
+      <p>Queda prohibida su reproducción, distribución o uso comercial sin autorización expresa por escrito de Abogaia.</p>
+      <p>Los abogados conservan los derechos sobre el contenido que publican en sus perfiles, pero otorgan a Abogaia una licencia no exclusiva para mostrarlo en la plataforma.</p>
+    </div>
+
+    <!-- 10 -->
+    <div class="doc-section" id="cancelacion">
+      <div class="section-num">Sección 10</div>
+      <h2 class="section-title">Cancelación y suspensión de cuentas</h2>
+
+      <p><strong>Por parte del usuario:</strong> Puedes cancelar tu cuenta en cualquier momento desde tu panel de control. La cancelación no genera reembolso del período en curso.</p>
+
+      <p><strong>Por parte de Abogaia:</strong> Nos reservamos el derecho de suspender o cancelar cuentas de forma inmediata en caso de:</p>
+      <ul class="doc-list">
+        <li>Violación de estos Términos y Condiciones</li>
+        <li>Conducta fraudulenta o engañosa verificada</li>
+        <li>Quejas reiteradas y fundamentadas de otros usuarios</li>
+        <li>Cédula profesional inválida, suspendida o revocada</li>
+        <li>Falta de pago por más de 10 días hábiles</li>
+      </ul>
+    </div>
+
+    <!-- 11 -->
+    <div class="doc-section" id="modificaciones">
+      <div class="section-num">Sección 11</div>
+      <h2 class="section-title">Modificaciones a los términos</h2>
+      <p>Abogaia se reserva el derecho de modificar estos Términos y Condiciones en cualquier momento. Los cambios serán notificados con al menos <strong>15 días de anticipación</strong> mediante correo electrónico y aviso en la plataforma.</p>
+      <p>Si no estás de acuerdo con los cambios, puedes cancelar tu cuenta antes de que entren en vigor. El uso continuado de la plataforma implica aceptación de los nuevos términos.</p>
+    </div>
+
+    <!-- 12 -->
+    <div class="doc-section" id="jurisdiccion">
+      <div class="section-num">Sección 12</div>
+      <h2 class="section-title">Jurisdicción y ley aplicable</h2>
+      <p>Estos Términos y Condiciones se rigen por las leyes de los <strong>Estados Unidos Mexicanos</strong>. Para cualquier controversia derivada del uso de la plataforma, las partes se someten a la jurisdicción de los <strong>tribunales competentes de la Ciudad de México</strong>, renunciando expresamente a cualquier otro fuero que pudiera corresponderles.</p>
+      <p>Antes de acudir a instancias legales, las partes se comprometen a intentar resolver cualquier disputa mediante negociación directa por un período mínimo de 30 días.</p>
+    </div>
+
+    <!-- 13 -->
+    <div class="doc-section" id="contacto">
+      <div class="section-num">Sección 13</div>
+      <h2 class="section-title">Contacto</h2>
+      <p>Para cualquier duda sobre estos Términos y Condiciones:</p>
+      <div class="highlight-box">
+        📧 <strong>legal@abogaiamx.com</strong><br>
+        🌐 <strong>abogaiamx.com</strong><br>
+        📍 México
+      </div>
+      <p>Responderemos en un plazo máximo de <strong>10 días hábiles</strong>.</p>
+    </div>
+
+  </div>
+</div>
+
+<footer>
+  <div>Abogaia © 2026 · México · Todos los derechos reservados</div>
+  <div style="margin-top:0.5rem;">
+    <a href="landing.html">Inicio</a>
+    <a href="privacidad.html">Aviso de Privacidad</a>
+    <a href="login.html">Iniciar sesión</a>
+  </div>
+</footer>
+
+</body>
+</html>
