@@ -507,7 +507,10 @@ header {
     <div class="logo-icon">A</div>
     <span class="logo-name">Abogaia</span>
   </a>
-  <a class="header-link" href="index.html">← Volver al inicio</a>
+  <div style="display:flex;align-items:center;gap:0.6rem;">
+    <a href="index.html" style="padding:0.45rem 1rem;background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.3);color:var(--gold);border-radius:8px;font-size:0.82rem;font-family:'DM Sans',sans-serif;font-weight:500;text-decoration:none;">👤 Soy cliente</a>
+    <a href="abogaia-dashboard.html" style="padding:0.45rem 1rem;background:var(--gold);border:none;color:#0a0c10;border-radius:8px;font-size:0.82rem;font-family:'DM Sans',sans-serif;font-weight:600;text-decoration:none;">Iniciar sesión</a>
+  </div>
 </header>
 
 <!-- STEPS -->
@@ -823,5 +826,14 @@ function formatExp(input) {
   input.value = val;
 }
 </script>
+<footer style="background:#0f2347;padding:1.5rem 2rem;text-align:center;font-size:0.78rem;color:rgba(255,255,255,0.4);border-top:1px solid rgba(201,168,76,0.15);">
+  <div>Abogaia © 2026 · México</div>
+  <div style="margin-top:0.5rem;display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;">
+    <a href="index.html" style="color:rgba(255,255,255,0.5);text-decoration:none;">Para clientes</a>
+    <a href="login.html" style="color:rgba(255,255,255,0.5);text-decoration:none;">Iniciar sesión</a>
+    <a href="privacidad.html" style="color:rgba(255,255,255,0.5);text-decoration:none;">Aviso de Privacidad</a>
+    <a href="terminos.html" style="color:rgba(255,255,255,0.5);text-decoration:none;">Términos y Condiciones</a>
+  </div>
+</footer>
 </body>
 </html>
