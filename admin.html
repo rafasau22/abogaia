@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Abogaia — Panel de Administrador</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0a0c10;
+  --surface: #111318;
+  --surface2: #181c24;
+  --border: #1f2433;
+  --gold: #c9a84c;
+  --gold-light: #e8c97a;
+  --gold-dim: rgba(201,168,76,0.10);
+  --text: #e8e6e0;
+  --muted: #5a6070;
+  --muted2: #8892a0;
+  --success: #22c55e;
+  --warning: #f59e0b;
+  --danger: #ef4444;
+  --accent: #3b6fff;
+  --sidebar-w: 240px;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  min-height: 100vh;
+  display: flex;
+}
+
+/* SIDEBAR */
+.sidebar {
+  width: var(--sidebar-w);
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+  display: flex; flex-direction: column;
+  position: fixed; top: 0; left: 0; bottom: 0; z-index: 50;
+}
+
+.sidebar-logo {
+  padding: 1.5rem;
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; gap: 0.75rem;
+}
+
+.logo-icon {
+  width: 36px; height: 36px;
+  background: linear-gradient(135deg, var(--gold), #8a6020);
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Playfair Display', serif;
+  font-weight: 700; color: #0a0c10; font-size: 1rem;
+}
+
+.logo-name { font-family: 'Playfair Display', serif; font-size: 1.3rem; color: var(--gold); font-weight: 700; }
+.logo-badge { font-size: 0.65rem; background: rgba(239,68,68,0.15); color: #ef4444; border: 1px solid rgba(239,68,68,0.2); padding: 0.15rem 0.5rem; border-radius: 100px; margin-left: auto; }
+
+.sidebar-admin {
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; gap: 0.75rem;
+}
+
+.admin-avatar {
+  width: 38px; height: 38px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--danger), #991b1b);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1rem; flex-shrink: 0;
+}
+
+.admin-name { font-size: 0.85rem; font-weight: 600; }
+.admin-role { font-size: 0.72rem; color: var(--danger); }
+
+.sidebar-nav { flex: 1; padding: 1rem 0.75rem; display: flex; flex-direction: column; gap: 0.25rem; }
+
+.nav-section-label { font-size: 0.65rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); padding: 0.5rem 0.75rem; margin-top: 0.5rem; }
+
+.nav-item {
+  display: flex; align-items: center; gap: 0.75rem;
+  padding: 0.65rem 0.75rem; border-radius: 10px;
+  font-size: 0.85rem; color: var(--muted2);
+  cursor: pointer; transition: all 0.2s;
+  border: none; background: none; width: 100%;
+  text-align: left; font-family: 'DM Sans', sans-serif;
+}
+
+.nav-item:hover { background: var(--surface2); color: var(--text); }
+.nav-item.active { background: var(--gold-dim); color: var(--gold); font-weight: 500; }
+.nav-item .icon { font-size: 1.1rem; width: 20px; text-align: center; }
+
+.nav-badge { margin-left: auto; background: var(--danger); color: white; font-size: 0.65rem; font-weight: 600; padding: 0.1rem 0.45rem; border-radius: 100px; }
+.nav-badge-gold { margin-left: auto; background: var(--gold); color: #0a0c10; font-size: 0.65rem; font-weight: 600; padding: 0.1rem 0.45rem; border-radius: 100px; }
+
+.sidebar-footer { padding: 1rem; border-top: 1px solid var(--border); }
+.logout-btn {
+  width: 100%; padding: 0.6rem; background: none;
+  border: 1px solid var(--border); border-radius: 8px;
+  color: var(--muted2); font-family: 'DM Sans', sans-serif;
+  font-size: 0.82rem; cursor: pointer; transition: all 0.2s;
+}
+.logout-btn:hover { border-color: var(--danger); color: var(--danger); }
+
+/* MAIN */
+.main { margin-left: var(--sidebar-w); flex: 1; display: flex; flex-direction: column; min-height: 100vh; }
+
+.topbar {
+  background: rgba(10,12,16,0.8); backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border);
+  padding: 0 2rem; height: 60px;
+  display: flex; align-items: center; justify-content: space-between;
+  position: sticky; top: 0; z-index: 40;
+}
+
+.topbar-title { font-family: 'Playfair Display', serif; font-size: 1.2rem; font-weight: 700; }
+
+.topbar-right { display: flex; align-items: center; gap: 1rem; }
+
+.search-input {
+  background: var(--surface2); border: 1px solid var(--border);
+  border-radius: 8px; padding: 0.4rem 0.9rem;
+  color: var(--text); font-family: 'DM Sans', sans-serif;
+  font-size: 0.82rem; outline: none; width: 220px;
+  transition: border-color 0.2s;
+}
+.search-input:focus { border-color: rgba(201,168,76,0.4); }
+.search-input::placeholder { color: var(--muted); }
+
+.content { padding: 2rem; flex: 1; }
+
+.section { display: none; }
+.section.active { display: block; animation: fadeIn 0.3s forwards; }
+
+@keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+/* STATS */
+.stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 2rem; }
+
+.stat-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 16px; padding: 1.25rem; transition: all 0.2s;
+}
+.stat-card:hover { border-color: rgba(201,168,76,0.3); transform: translateY(-2px); }
+
+.stat-label { font-size: 0.75rem; color: var(--muted2); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.75rem; }
+.stat-value { font-family: 'Playfair Display', serif; font-size: 2rem; font-weight: 700; color: var(--gold); line-height: 1; margin-bottom: 0.4rem; }
+.stat-change { font-size: 0.75rem; color: var(--success); }
+.stat-change.down { color: var(--danger); }
+
+/* TABLE */
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; margin-bottom: 1.5rem; }
+.card-header { padding: 1.25rem 1.5rem; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+.card-title { font-size: 0.9rem; font-weight: 600; }
+
+.table { width: 100%; border-collapse: collapse; }
+.table th { text-align: left; font-size: 0.72rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; padding: 0 1.25rem 0.75rem; font-weight: 500; }
+.table td { padding: 0.85rem 1.25rem; font-size: 0.85rem; border-top: 1px solid var(--border); }
+.table tr:hover td { background: var(--surface2); }
+
+.badge { display: inline-flex; align-items: center; gap: 0.3rem; font-size: 0.7rem; font-weight: 500; padding: 0.2rem 0.6rem; border-radius: 100px; }
+.badge-active { background: rgba(34,197,94,0.1); color: var(--success); border: 1px solid rgba(34,197,94,0.2); }
+.badge-pending { background: rgba(245,158,11,0.1); color: var(--warning); border: 1px solid rgba(245,158,11,0.2); }
+.badge-suspended { background: rgba(239,68,68,0.1); color: var(--danger); border: 1px solid rgba(239,68,68,0.2); }
+.badge-trial { background: rgba(59,111,255,0.1); color: #7aa0ff; border: 1px solid rgba(59,111,255,0.2); }
+
+.action-btn {
+  padding: 0.3rem 0.7rem; border-radius: 6px; font-size: 0.75rem;
+  cursor: pointer; font-family: 'DM Sans', sans-serif;
+  transition: all 0.2s; border: none; margin-right: 0.3rem;
+}
+.btn-view { background: var(--gold-dim); color: var(--gold); border: 1px solid rgba(201,168,76,0.2); }
+.btn-view:hover { background: rgba(201,168,76,0.2); }
+.btn-suspend { background: rgba(239,68,68,0.08); color: var(--danger); border: 1px solid rgba(239,68,68,0.15); }
+.btn-suspend:hover { background: rgba(239,68,68,0.15); }
+.btn-activate { background: rgba(34,197,94,0.08); color: var(--success); border: 1px solid rgba(34,197,94,0.15); }
+.btn-activate:hover { background: rgba(34,197,94,0.15); }
+
+/* EMPTY STATE */
+.empty-state { text-align: center; padding: 3rem; color: var(--muted2); }
+.empty-icon { font-size: 2.5rem; margin-bottom: 0.75rem; }
+.empty-title { font-size: 0.95rem; font-weight: 500; margin-bottom: 0.4rem; }
+.empty-sub { font-size: 0.82rem; color: var(--muted); }
+
+/* LOADING */
+.loading { text-align: center; padding: 2rem; color: var(--muted2); font-size: 0.85rem; }
+
+/* MODAL */
+.modal-overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.7);
+  z-index: 200; display: none; align-items: center; justify-content: center;
+}
+.modal-overlay.open { display: flex; }
+.modal {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 20px; padding: 2rem; max-width: 500px; width: 90%;
+  animation: fadeIn 0.2s forwards;
+}
+.modal-title { font-family: 'Playfair Display', serif; font-size: 1.2rem; margin-bottom: 1.25rem; }
+.modal-field { margin-bottom: 0.75rem; font-size: 0.85rem; }
+.modal-label { color: var(--muted2); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 0.2rem; }
+.modal-value { color: var(--text); }
+.modal-close {
+  width: 100%; padding: 0.75rem; margin-top: 1.5rem;
+  background: var(--surface2); border: 1px solid var(--border);
+  border-radius: 10px; color: var(--muted2);
+  font-family: 'DM Sans', sans-serif; cursor: pointer; transition: all 0.2s;
+}
+.modal-close:hover { border-color: var(--gold); color: var(--gold); }
+
+/* SCROLLBAR */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-icon">A</div>
+    <span class="logo-name">Abogaia</span>
+    <span class="logo-badge">ADMIN</span>
+  </div>
+
+  <div class="sidebar-admin">
+    <div class="admin-avatar">👑</div>
+    <div>
+      <div class="admin-name" id="adminName">Administrador</div>
+      <div class="admin-role">Dueño · Acceso total</div>
+    </div>
+  </div>
+
+  <nav class="sidebar-nav">
+    <span class="nav-section-label">General</span>
+    <button class="nav-item active" onclick="showSection('inicio', this)">
+      <span class="icon">🏠</span> Inicio
+    </button>
+    <button class="nav-item" onclick="showSection('abogados', this)">
+      <span class="icon">⚖️</span> Abogados
+      <span class="nav-badge" id="badgeAbogados">0</span>
+    </button>
+    <button class="nav-item" onclick="showSection('clientes', this)">
+      <span class="icon">👥</span> Clientes
+      <span class="nav-badge-gold" id="badgeClientes">0</span>
+    </button>
+
+    <span class="nav-section-label">Finanzas</span>
+    <button class="nav-item" onclick="showSection('pagos', this)">
+      <span class="icon">💰</span> Suscripciones
+    </button>
+
+    <span class="nav-section-label">Sistema</span>
+    <button class="nav-item" onclick="showSection('configuracion', this)">
+      <span class="icon">⚙️</span> Configuración
+    </button>
+  </nav>
+
+  <div class="sidebar-footer">
+    <button class="logout-btn" onclick="cerrarSesion()">🚪 Cerrar sesión</button>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<main class="main">
+  <header class="topbar">
+    <div class="topbar-title" id="pageTitle">Panel de Control</div>
+    <div class="topbar-right">
+      <input class="search-input" placeholder="🔍 Buscar usuario..." oninput="buscar(this.value)">
+      <a href="index.html" style="font-size:0.78rem;color:var(--muted2);text-decoration:none;">Ver app →</a>
+    </div>
+  </header>
+
+  <div class="content">
+
+    <!-- INICIO -->
+    <div class="section active" id="sec-inicio">
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-label">Total abogados</div>
+          <div class="stat-value" id="totalAbogados">—</div>
+          <div class="stat-change" id="changeAbogados">Cargando...</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Total clientes</div>
+          <div class="stat-value" id="totalClientes">—</div>
+          <div class="stat-change" id="changeClientes">Cargando...</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Suscripciones activas</div>
+          <div class="stat-value" id="totalSubs">—</div>
+          <div class="stat-change">Planes activos</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Ingresos estimados</div>
+          <div class="stat-value" id="totalIngresos">—</div>
+          <div class="stat-change">MXN / mes</div>
+        </div>
+      </div>
+
+      <!-- Últimos registros -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;">
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">Últimos abogados</span>
+            <button onclick="showSection('abogados', document.querySelectorAll('.nav-item')[1])" style="font-size:0.78rem;color:var(--gold);background:none;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;">Ver todos</button>
+          </div>
+          <div id="ultimosAbogados"><div class="loading">Cargando...</div></div>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">Últimos clientes</span>
+            <button onclick="showSection('clientes', document.querySelectorAll('.nav-item')[2])" style="font-size:0.78rem;color:var(--gold);background:none;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;">Ver todos</button>
+          </div>
+          <div id="ultimosClientes"><div class="loading">Cargando...</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ABOGADOS -->
+    <div class="section" id="sec-abogados">
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">Todos los abogados registrados</span>
+          <span id="countAbogados" style="font-size:0.78rem;color:var(--muted2);">Cargando...</span>
+        </div>
+        <div id="tablaAbogados"><div class="loading">Cargando abogados...</div></div>
+      </div>
+    </div>
+
+    <!-- CLIENTES -->
+    <div class="section" id="sec-clientes">
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">Todos los clientes registrados</span>
+          <span id="countClientes" style="font-size:0.78rem;color:var(--muted2);">Cargando...</span>
+        </div>
+        <div id="tablaClientes"><div class="loading">Cargando clientes...</div></div>
+      </div>
+    </div>
+
+    <!-- PAGOS -->
+    <div class="section" id="sec-pagos">
+      <div class="stats-grid" style="grid-template-columns:repeat(3,1fr);">
+        <div class="stat-card">
+          <div class="stat-label">Plan Pro activo</div>
+          <div class="stat-value" id="planPro">—</div>
+          <div class="stat-change">$1,000 MXN/mes c/u</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">En período trial</div>
+          <div class="stat-value" id="planTrial">—</div>
+          <div class="stat-change">30 días gratis</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Ingreso mensual estimado</div>
+          <div class="stat-value" id="ingresoPago">—</div>
+          <div class="stat-change">MXN (solo planes Pro)</div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header"><span class="card-title">Detalle de suscripciones</span></div>
+        <div id="tablaPagos"><div class="loading">Cargando...</div></div>
+      </div>
+    </div>
+
+    <!-- CONFIGURACIÓN -->
+    <div class="section" id="sec-configuracion">
+      <div class="card" style="max-width:600px;">
+        <div class="card-header"><span class="card-title">Configuración del sistema</span></div>
+        <div style="padding:1.5rem;">
+          <div style="margin-bottom:1.5rem;">
+            <div style="font-size:0.78rem;color:var(--muted2);margin-bottom:0.4rem;text-transform:uppercase;letter-spacing:0.07em;">Precio Plan Básico</div>
+            <div style="font-size:1.1rem;color:var(--gold);font-weight:600;">$500 MXN / mes</div>
+          </div>
+          <div style="margin-bottom:1.5rem;">
+            <div style="font-size:0.78rem;color:var(--muted2);margin-bottom:0.4rem;text-transform:uppercase;letter-spacing:0.07em;">Precio Plan Pro</div>
+            <div style="font-size:1.1rem;color:var(--gold);font-weight:600;">$1,000 MXN / mes</div>
+          </div>
+          <div style="margin-bottom:1.5rem;">
+            <div style="font-size:0.78rem;color:var(--muted2);margin-bottom:0.4rem;text-transform:uppercase;letter-spacing:0.07em;">Período de prueba</div>
+            <div style="font-size:1.1rem;color:var(--gold);font-weight:600;">30 días gratis</div>
+          </div>
+          <div style="padding:1rem;background:rgba(239,68,68,0.06);border:1px solid rgba(239,68,68,0.15);border-radius:10px;font-size:0.82rem;color:var(--muted2);line-height:1.6;">
+            ⚠️ Para modificar precios y configuración avanzada, se requiere integración con Stripe (próximo paso).
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<!-- MODAL DETALLE -->
+<div class="modal-overlay" id="modalOverlay" onclick="cerrarModal(event)">
+  <div class="modal" id="modalContent">
+    <h2 class="modal-title" id="modalTitle">Detalle</h2>
+    <div id="modalBody"></div>
+    <button class="modal-close" onclick="document.getElementById('modalOverlay').classList.remove('open')">Cerrar</button>
+  </div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { getFirestore, collection, getDocs, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCn08o2CClY1yEnK686lZ662E4_3kDQWrM",
+  authDomain: "abogaia-2236.firebaseapp.com",
+  projectId: "abogaia-2236",
+  storageBucket: "abogaia-2236.firebasestorage.app",
+  messagingSenderId: "614300759506",
+  appId: "1:614300759506:web:a92048cb2d20b2ab89840b"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+// ADMIN EMAIL — solo este correo puede acceder
+const ADMIN_EMAIL = 'rafalsautrerachz@gmail.com';
+
+let abogadosData = [];
+let clientesData = [];
+
+onAuthStateChanged(auth, async (user) => {
+  if (!user) { window.location.href = 'login.html'; return; }
+  if (user.email !== ADMIN_EMAIL) {
+    alert('⚠️ Acceso denegado. Esta área es solo para administradores.');
+    window.location.href = 'index.html';
+    return;
+  }
+
+  document.getElementById('adminName').textContent = user.email.split('@')[0];
+  await cargarTodo();
+});
+
+async function cargarTodo() {
+  await Promise.all([cargarAbogados(), cargarClientes()]);
+  actualizarStats();
+}
+
+async function cargarAbogados() {
+  const snap = await getDocs(collection(db, "abogados"));
+  abogadosData = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+  renderAbogados(abogadosData);
+  renderUltimosAbogados(abogadosData);
+}
+
+async function cargarClientes() {
+  const snap = await getDocs(collection(db, "clientes"));
+  clientesData = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+  renderClientes(clientesData);
+  renderUltimosClientes(clientesData);
+}
+
+function actualizarStats() {
+  const total = abogadosData.length;
+  const totalC = clientesData.length;
+  const pros = abogadosData.filter(a => a.plan === 'Pro' && a.estatusSuscripcion !== 'trial').length;
+  const trials = abogadosData.filter(a => a.estatusSuscripcion === 'trial').length;
+
+  document.getElementById('totalAbogados').textContent = total;
+  document.getElementById('totalClientes').textContent = totalC;
+  document.getElementById('totalSubs').textContent = pros + trials;
+  document.getElementById('totalIngresos').textContent = `$${(pros * 1000).toLocaleString()}`;
+  document.getElementById('badgeAbogados').textContent = total;
+  document.getElementById('badgeClientes').textContent = totalC;
+  document.getElementById('countAbogados').textContent = `${total} abogados`;
+  document.getElementById('countClientes').textContent = `${totalC} clientes`;
+  document.getElementById('planPro').textContent = pros;
+  document.getElementById('planTrial').textContent = trials;
+  document.getElementById('ingresoPago').textContent = `$${(pros * 1000).toLocaleString()}`;
+  document.getElementById('changeAbogados').textContent = `${trials} en período trial`;
+  document.getElementById('changeClientes').textContent = `${totalC} registrados`;
+}
+
+function renderAbogados(data) {
+  const el = document.getElementById('tablaAbogados');
+  if (!data.length) {
+    el.innerHTML = `<div class="empty-state"><div class="empty-icon">⚖️</div><div class="empty-title">Sin abogados aún</div><div class="empty-sub">Cuando los abogados se registren aparecerán aquí</div></div>`;
+    return;
+  }
+  el.innerHTML = `<table class="table">
+    <thead><tr>
+      <th>Nombre</th><th>Especialidad</th><th>Estado</th><th>Plan</th><th>Registro</th><th>Acciones</th>
+    </tr></thead>
+    <tbody>${data.map(a => `
+      <tr>
+        <td>
+          <div style="font-weight:500;">Lic. ${a.nombre || ''} ${a.apellidos || ''}</div>
+          <div style="font-size:0.75rem;color:var(--muted2);">${a.email || ''}</div>
+        </td>
+        <td style="color:var(--muted2);font-size:0.82rem;">${Array.isArray(a.especialidades) ? a.especialidades.slice(0,2).join(', ') : (a.especialidades || '—')}</td>
+        <td style="color:var(--muted2);font-size:0.82rem;">${Array.isArray(a.estados) ? a.estados[0] : '—'}</td>
+        <td><span class="badge ${a.estatusSuscripcion === 'trial' ? 'badge-trial' : 'badge-active'}">${a.estatusSuscripcion === 'trial' ? 'Trial' : a.plan || 'Pro'}</span></td>
+        <td style="font-size:0.78rem;color:var(--muted2);">${a.fechaRegistro ? new Date(a.fechaRegistro).toLocaleDateString('es-MX') : '—'}</td>
+        <td>
+          <button class="action-btn btn-view" onclick="verDetalle('${a.id}', 'abogado')">Ver</button>
+          <button class="action-btn btn-suspend" onclick="suspender('${a.id}')">Suspender</button>
+        </td>
+      </tr>`).join('')}
+    </tbody>
+  </table>`;
+}
+
+function renderClientes(data) {
+  const el = document.getElementById('tablaClientes');
+  if (!data.length) {
+    el.innerHTML = `<div class="empty-state"><div class="empty-icon">👥</div><div class="empty-title">Sin clientes aún</div><div class="empty-sub">Cuando los clientes se registren aparecerán aquí</div></div>`;
+    return;
+  }
+  el.innerHTML = `<table class="table">
+    <thead><tr>
+      <th>Nombre</th><th>Estado</th><th>Tipo de caso</th><th>Registro</th>
+    </tr></thead>
+    <tbody>${data.map(c => `
+      <tr>
+        <td>
+          <div style="font-weight:500;">${c.nombre || ''} ${c.apellidos || ''}</div>
+          <div style="font-size:0.75rem;color:var(--muted2);">${c.email || ''}</div>
+        </td>
+        <td style="color:var(--muted2);font-size:0.82rem;">${c.estado || '—'}</td>
+        <td style="color:var(--muted2);font-size:0.82rem;">${c.tipoCaso || 'No especificado'}</td>
+        <td style="font-size:0.78rem;color:var(--muted2);">${c.fechaRegistro ? new Date(c.fechaRegistro).toLocaleDateString('es-MX') : '—'}</td>
+      </tr>`).join('')}
+    </tbody>
+  </table>`;
+
+  // Pagos table
+  document.getElementById('tablaPagos').innerHTML = `<table class="table">
+    <thead><tr><th>Abogado</th><th>Plan</th><th>Estado</th><th>Desde</th></tr></thead>
+    <tbody>${abogadosData.map(a => `
+      <tr>
+        <td><div style="font-weight:500;">Lic. ${a.nombre || ''} ${a.apellidos || ''}</div><div style="font-size:0.75rem;color:var(--muted2);">${a.email || ''}</div></td>
+        <td>${a.plan || 'Pro'}</td>
+        <td><span class="badge ${a.estatusSuscripcion === 'trial' ? 'badge-trial' : 'badge-active'}">${a.estatusSuscripcion === 'trial' ? '🕐 Trial' : '✅ Activo'}</span></td>
+        <td style="font-size:0.78rem;color:var(--muted2);">${a.fechaRegistro ? new Date(a.fechaRegistro).toLocaleDateString('es-MX') : '—'}</td>
+      </tr>`).join('')}
+    </tbody>
+  </table>`;
+}
+
+function renderUltimosAbogados(data) {
+  const ultimos = [...data].sort((a,b) => new Date(b.fechaRegistro) - new Date(a.fechaRegistro)).slice(0,4);
+  document.getElementById('ultimosAbogados').innerHTML = ultimos.length ? ultimos.map(a => `
+    <div style="display:flex;align-items:center;gap:0.75rem;padding:0.85rem 1.25rem;border-top:1px solid var(--border);">
+      <div style="width:34px;height:34px;border-radius:50%;background:var(--surface2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;color:var(--gold);font-size:0.85rem;flex-shrink:0;">${(a.nombre||'A')[0]}</div>
+      <div style="flex:1;min-width:0;">
+        <div style="font-size:0.85rem;font-weight:500;">Lic. ${a.nombre||''} ${a.apellidos||''}</div>
+        <div style="font-size:0.75rem;color:var(--muted2);">${Array.isArray(a.especialidades) ? a.especialidades[0] : '—'}</div>
+      </div>
+      <span class="badge ${a.estatusSuscripcion==='trial'?'badge-trial':'badge-active'}">${a.estatusSuscripcion==='trial'?'Trial':'Pro'}</span>
+    </div>`).join('') :
+    `<div class="empty-state"><div class="empty-icon">⚖️</div><div class="empty-title">Sin abogados aún</div></div>`;
+}
+
+function renderUltimosClientes(data) {
+  const ultimos = [...data].sort((a,b) => new Date(b.fechaRegistro) - new Date(a.fechaRegistro)).slice(0,4);
+  document.getElementById('ultimosClientes').innerHTML = ultimos.length ? ultimos.map(c => `
+    <div style="display:flex;align-items:center;gap:0.75rem;padding:0.85rem 1.25rem;border-top:1px solid var(--border);">
+      <div style="width:34px;height:34px;border-radius:50%;background:var(--surface2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:0.85rem;flex-shrink:0;">👤</div>
+      <div style="flex:1;min-width:0;">
+        <div style="font-size:0.85rem;font-weight:500;">${c.nombre||''} ${c.apellidos||''}</div>
+        <div style="font-size:0.75rem;color:var(--muted2);">${c.estado||'—'} · ${c.tipoCaso||'Sin caso'}</div>
+      </div>
+    </div>`).join('') :
+    `<div class="empty-state"><div class="empty-icon">👥</div><div class="empty-title">Sin clientes aún</div></div>`;
+}
+
+window.verDetalle = function(id, tipo) {
+  const data = tipo === 'abogado' ? abogadosData.find(a => a.id === id) : clientesData.find(c => c.id === id);
+  if (!data) return;
+  document.getElementById('modalTitle').textContent = tipo === 'abogado' ? `Lic. ${data.nombre} ${data.apellidos}` : `${data.nombre} ${data.apellidos}`;
+  document.getElementById('modalBody').innerHTML = `
+    ${data.email ? `<div class="modal-field"><div class="modal-label">Correo</div><div class="modal-value">${data.email}</div></div>` : ''}
+    ${data.telefono ? `<div class="modal-field"><div class="modal-label">Teléfono</div><div class="modal-value">${data.telefono}</div></div>` : ''}
+    ${data.cedula ? `<div class="modal-field"><div class="modal-label">Cédula profesional</div><div class="modal-value">${data.cedula}</div></div>` : ''}
+    ${data.curp ? `<div class="modal-field"><div class="modal-label">CURP</div><div class="modal-value">${data.curp}</div></div>` : ''}
+    ${data.especialidades ? `<div class="modal-field"><div class="modal-label">Especialidades</div><div class="modal-value">${Array.isArray(data.especialidades) ? data.especialidades.join(', ') : data.especialidades}</div></div>` : ''}
+    ${data.estados ? `<div class="modal-field"><div class="modal-label">Estados</div><div class="modal-value">${Array.isArray(data.estados) ? data.estados.join(', ') : data.estados}</div></div>` : ''}
+    ${data.estado ? `<div class="modal-field"><div class="modal-label">Estado</div><div class="modal-value">${data.estado}</div></div>` : ''}
+    ${data.tipoCaso ? `<div class="modal-field"><div class="modal-label">Tipo de caso</div><div class="modal-value">${data.tipoCaso}</div></div>` : ''}
+    ${data.descripcion ? `<div class="modal-field"><div class="modal-label">Descripción</div><div class="modal-value">${data.descripcion}</div></div>` : ''}
+    ${data.plan ? `<div class="modal-field"><div class="modal-label">Plan</div><div class="modal-value">${data.plan} · ${data.estatusSuscripcion}</div></div>` : ''}
+    <div class="modal-field"><div class="modal-label">Registro</div><div class="modal-value">${data.fechaRegistro ? new Date(data.fechaRegistro).toLocaleString('es-MX') : '—'}</div></div>
+  `;
+  document.getElementById('modalOverlay').classList.add('open');
+}
+
+window.suspender = async function(id) {
+  if (!confirm('¿Seguro que quieres suspender esta cuenta?')) return;
+  await updateDoc(doc(db, "abogados", id), { estatusSuscripcion: 'suspendido' });
+  await cargarAbogados();
+  actualizarStats();
+  alert('✅ Cuenta suspendida.');
+}
+
+window.cerrarModal = function(e) {
+  if (e.target === document.getElementById('modalOverlay')) {
+    document.getElementById('modalOverlay').classList.remove('open');
+  }
+}
+
+window.buscar = function(query) {
+  const q = query.toLowerCase();
+  const filtrados = abogadosData.filter(a =>
+    `${a.nombre} ${a.apellidos} ${a.email}`.toLowerCase().includes(q)
+  );
+  renderAbogados(filtrados);
+}
+
+window.cerrarSesion = async function() {
+  await signOut(auth);
+  window.location.href = 'login.html';
+}
+</script>
+
+<script>
+const titles = {
+  inicio: 'Panel de Control',
+  abogados: 'Abogados',
+  clientes: 'Clientes',
+  pagos: 'Suscripciones y Pagos',
+  configuracion: 'Configuración'
+};
+
+function showSection(name, navEl) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('sec-' + name).classList.add('active');
+  document.getElementById('pageTitle').textContent = titles[name];
+  if (navEl) navEl.classList.add('active');
+}
+</script>
+</body>
+</html>
