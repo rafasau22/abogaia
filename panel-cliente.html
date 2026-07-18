@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Abogaia — Mi Panel</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0a0c10;
+  --surface: #111318;
+  --surface2: #181c24;
+  --border: #1f2433;
+  --gold: #c9a84c;
+  --gold-light: #e8c97a;
+  --gold-dim: rgba(201,168,76,0.10);
+  --text: #e8e6e0;
+  --muted: #5a6070;
+  --muted2: #8892a0;
+  --success: #22c55e;
+  --danger: #ef4444;
+  --sidebar-w: 240px;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  min-height: 100vh;
+  display: flex;
+}
+
+/* SIDEBAR */
+.sidebar {
+  width: var(--sidebar-w);
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+  display: flex; flex-direction: column;
+  position: fixed; top: 0; left: 0; bottom: 0; z-index: 50;
+}
+
+.sidebar-logo {
+  padding: 1.5rem;
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; gap: 0.75rem;
+}
+
+.logo-icon {
+  width: 36px; height: 36px;
+  background: linear-gradient(135deg, var(--gold), #8a6020);
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Playfair Display', serif;
+  font-weight: 700; color: #0a0c10; font-size: 1rem;
+}
+
+.logo-name { font-family: 'Playfair Display', serif; font-size: 1.3rem; color: var(--gold); font-weight: 700; }
+
+.sidebar-profile {
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; gap: 0.75rem;
+}
+
+.profile-avatar {
+  width: 40px; height: 40px; border-radius: 50%;
+  background: var(--surface2); border: 2px solid var(--gold);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1rem; flex-shrink: 0;
+}
+
+.profile-name { font-size: 0.85rem; font-weight: 600; }
+.profile-role { font-size: 0.72rem; color: var(--gold); }
+
+.sidebar-nav { flex: 1; padding: 1rem 0.75rem; display: flex; flex-direction: column; gap: 0.25rem; }
+
+.nav-section-label { font-size: 0.65rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); padding: 0.5rem 0.75rem; margin-top: 0.5rem; }
+
+.nav-item {
+  display: flex; align-items: center; gap: 0.75rem;
+  padding: 0.65rem 0.75rem; border-radius: 10px;
+  font-size: 0.85rem; color: var(--muted2);
+  cursor: pointer; transition: all 0.2s;
+  border: none; background: none; width: 100%;
+  text-align: left; font-family: 'DM Sans', sans-serif;
+}
+
+.nav-item:hover { background: var(--surface2); color: var(--text); }
+.nav-item.active { background: var(--gold-dim); color: var(--gold); font-weight: 500; }
+.nav-item .icon { font-size: 1.1rem; width: 20px; text-align: center; }
+
+.nav-badge { margin-left: auto; background: var(--danger); color: white; font-size: 0.65rem; font-weight: 600; padding: 0.1rem 0.45rem; border-radius: 100px; }
+
+.sidebar-footer { padding: 1rem; border-top: 1px solid var(--border); }
+.logout-btn {
+  width: 100%; padding: 0.6rem; background: none;
+  border: 1px solid var(--border); border-radius: 8px;
+  color: var(--muted2); font-family: 'DM Sans', sans-serif;
+  font-size: 0.82rem; cursor: pointer; transition: all 0.2s;
+}
+.logout-btn:hover { border-color: var(--danger); color: var(--danger); }
+
+/* MAIN */
+.main { margin-left: var(--sidebar-w); flex: 1; display: flex; flex-direction: column; min-height: 100vh; }
+
+.topbar {
+  background: rgba(10,12,16,0.8); backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border);
+  padding: 0 2rem; height: 60px;
+  display: flex; align-items: center; justify-content: space-between;
+  position: sticky; top: 0; z-index: 40;
+}
+
+.topbar-title { font-family: 'Playfair Display', serif; font-size: 1.2rem; font-weight: 700; }
+
+.content { padding: 2rem; flex: 1; }
+
+.section { display: none; }
+.section.active { display: block; animation: fadeIn 0.3s forwards; }
+
+@keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+/* CARDS */
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; margin-bottom: 1.5rem; }
+.card-header { padding: 1.25rem 1.5rem; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+.card-title { font-size: 0.9rem; font-weight: 600; }
+.card-body { padding: 1.25rem 1.5rem; }
+
+/* INICIO */
+.welcome-banner {
+  background: linear-gradient(135deg, rgba(201,168,76,0.1), rgba(201,168,76,0.04));
+  border: 1px solid rgba(201,168,76,0.2);
+  border-radius: 16px; padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  display: flex; align-items: center; gap: 1rem;
+}
+
+.welcome-icon { font-size: 2rem; flex-shrink: 0; }
+.welcome-title { font-family: 'Playfair Display', serif; font-size: 1.2rem; margin-bottom: 0.25rem; }
+.welcome-sub { font-size: 0.85rem; color: var(--muted2); }
+
+.btn-gold {
+  padding: 0.7rem 1.5rem; background: var(--gold);
+  border: none; border-radius: 10px; color: #0a0c10;
+  font-family: 'DM Sans', sans-serif; font-weight: 600;
+  font-size: 0.85rem; cursor: pointer; transition: all 0.2s;
+  text-decoration: none; display: inline-block; margin-top: 1rem;
+}
+.btn-gold:hover { background: var(--gold-light); }
+
+/* CASOS */
+.caso-card {
+  background: var(--surface2); border: 1px solid var(--border);
+  border-radius: 12px; padding: 1.25rem; margin-bottom: 1rem;
+  cursor: pointer; transition: all 0.2s;
+}
+.caso-card:hover { border-color: rgba(201,168,76,0.3); }
+
+.caso-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.5rem; }
+.caso-title { font-weight: 600; font-size: 0.9rem; }
+.caso-desc { font-size: 0.82rem; color: var(--muted2); line-height: 1.5; margin-bottom: 0.75rem; }
+
+.badge { display: inline-flex; align-items: center; gap: 0.3rem; font-size: 0.7rem; font-weight: 500; padding: 0.2rem 0.6rem; border-radius: 100px; }
+.badge-active { background: rgba(34,197,94,0.1); color: var(--success); border: 1px solid rgba(34,197,94,0.2); }
+.badge-pending { background: rgba(245,158,11,0.1); color: #f59e0b; border: 1px solid rgba(245,158,11,0.2); }
+.badge-new { background: rgba(59,111,255,0.1); color: #7aa0ff; border: 1px solid rgba(59,111,255,0.2); }
+
+/* CHAT */
+.chat-layout { display: grid; grid-template-columns: 280px 1fr; height: calc(100vh - 120px); gap: 1rem; }
+
+.chat-list { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; display: flex; flex-direction: column; }
+.chat-list-header { padding: 1rem 1.25rem; border-bottom: 1px solid var(--border); font-size: 0.85rem; font-weight: 600; }
+
+.chat-item {
+  display: flex; align-items: center; gap: 0.75rem;
+  padding: 0.85rem 1.25rem; cursor: pointer;
+  transition: background 0.2s; border-bottom: 1px solid var(--border);
+}
+.chat-item:hover { background: var(--surface2); }
+.chat-item.active { background: var(--gold-dim); }
+
+.chat-avatar {
+  width: 38px; height: 38px; border-radius: 50%;
+  background: var(--surface2); border: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Playfair Display', serif; color: var(--gold);
+  font-size: 0.9rem; flex-shrink: 0;
+}
+
+.chat-item-name { font-size: 0.85rem; font-weight: 500; }
+.chat-item-preview { font-size: 0.75rem; color: var(--muted2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.chat-unread { width: 18px; height: 18px; background: var(--gold); color: #0a0c10; border-radius: 50%; font-size: 0.65rem; font-weight: 700; display: flex; align-items: center; justify-content: center; margin-left: auto; flex-shrink: 0; }
+
+.chat-window { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; display: flex; flex-direction: column; }
+
+.chat-window-header { padding: 1rem 1.5rem; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 0.75rem; }
+.chat-window-name { font-weight: 600; font-size: 0.9rem; }
+.chat-window-status { font-size: 0.75rem; color: var(--success); }
+
+.chat-messages { flex: 1; overflow-y: auto; padding: 1.25rem; display: flex; flex-direction: column; gap: 0.75rem; }
+
+.msg { display: flex; gap: 0.6rem; align-items: flex-end; }
+.msg.sent { flex-direction: row-reverse; }
+
+.msg-avatar { width: 28px; height: 28px; border-radius: 50%; background: var(--surface2); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 0.7rem; flex-shrink: 0; font-family: 'Playfair Display', serif; color: var(--gold); }
+
+.msg-bubble { max-width: 75%; padding: 0.65rem 0.9rem; border-radius: 14px; font-size: 0.85rem; line-height: 1.5; }
+.msg.received .msg-bubble { background: var(--surface2); border: 1px solid var(--border); border-bottom-left-radius: 4px; }
+.msg.sent .msg-bubble { background: var(--gold-dim); border: 1px solid rgba(201,168,76,0.2); border-bottom-right-radius: 4px; color: var(--gold-light); }
+
+.msg-time { font-size: 0.68rem; color: var(--muted); margin-top: 0.2rem; }
+.msg.sent .msg-time { text-align: right; }
+
+.chat-input-area { padding: 1rem 1.25rem; border-top: 1px solid var(--border); display: flex; gap: 0.75rem; align-items: center; }
+
+.chat-input {
+  flex: 1; background: var(--surface2); border: 1px solid var(--border);
+  border-radius: 10px; padding: 0.7rem 1rem;
+  color: var(--text); font-family: 'DM Sans', sans-serif;
+  font-size: 0.88rem; outline: none; transition: border-color 0.2s;
+}
+.chat-input:focus { border-color: rgba(201,168,76,0.4); }
+.chat-input::placeholder { color: var(--muted); }
+
+.send-btn {
+  width: 40px; height: 40px; border-radius: 10px;
+  background: var(--gold); border: none; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.2s; flex-shrink: 0;
+}
+.send-btn:hover { background: var(--gold-light); }
+
+.empty-chat { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; color: var(--muted2); text-align: center; padding: 2rem; }
+.empty-icon { font-size: 2.5rem; margin-bottom: 0.75rem; }
+
+/* PERFIL */
+.form-group { margin-bottom: 1.1rem; }
+.form-label { display: block; font-size: 0.75rem; color: var(--muted2); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.45rem; font-weight: 500; }
+.form-input { width: 100%; background: var(--surface2); border: 1px solid var(--border); border-radius: 10px; padding: 0.75rem 1rem; color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 0.9rem; outline: none; transition: border-color 0.2s; }
+.form-input:focus { border-color: rgba(201,168,76,0.4); }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+.save-btn { padding: 0.8rem 2rem; background: var(--gold); border: none; border-radius: 10px; color: #0a0c10; font-family: 'DM Sans', sans-serif; font-weight: 600; font-size: 0.9rem; cursor: pointer; transition: all 0.2s; margin-top: 0.5rem; }
+.save-btn:hover { background: var(--gold-light); }
+
+/* LOADING */
+.loading { text-align: center; padding: 2rem; color: var(--muted2); font-size: 0.85rem; }
+
+/* SCROLLBAR */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+@media (max-width: 768px) {
+  .sidebar { display: none; }
+  .main { margin-left: 0; }
+  .chat-layout { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-icon">A</div>
+    <span class="logo-name">Abogaia</span>
+  </div>
+
+  <div class="sidebar-profile">
+    <div class="profile-avatar" id="clientAvatar">👤</div>
+    <div>
+      <div class="profile-name" id="clientName">Cargando...</div>
+      <div class="profile-role">Cliente</div>
+    </div>
+  </div>
+
+  <nav class="sidebar-nav">
+    <span class="nav-section-label">Mi cuenta</span>
+    <button class="nav-item active" onclick="showSection('inicio', this)">
+      <span class="icon">🏠</span> Inicio
+    </button>
+    <button class="nav-item" onclick="showSection('casos', this)">
+      <span class="icon">📂</span> Mis casos
+    </button>
+    <button class="nav-item" onclick="showSection('mensajes', this)">
+      <span class="icon">💬</span> Mensajes
+      <span class="nav-badge" id="badgeMensajes" style="display:none">0</span>
+    </button>
+    <button class="nav-item" onclick="showSection('perfil', this)">
+      <span class="icon">👤</span> Mi perfil
+    </button>
+  </nav>
+
+  <div class="sidebar-footer">
+    <button class="logout-btn" onclick="cerrarSesion()">🚪 Cerrar sesión</button>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<main class="main">
+  <header class="topbar">
+    <div class="topbar-title" id="pageTitle">Inicio</div>
+    <div style="display:flex;align-items:center;gap:1rem;">
+      <a href="index.html" style="font-size:0.78rem;color:var(--muted2);text-decoration:none;">🔍 Buscar abogado</a>
+    </div>
+  </header>
+
+  <div class="content">
+
+    <!-- INICIO -->
+    <div class="section active" id="sec-inicio">
+      <div class="welcome-banner">
+        <div class="welcome-icon">⚖️</div>
+        <div>
+          <div class="welcome-title">Bienvenido, <span id="welcomeName">...</span></div>
+          <div class="welcome-sub">Aquí puedes ver tus casos activos y comunicarte con tu abogado.</div>
+          <a class="btn-gold" href="index.html">+ Buscar un abogado</a>
+        </div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;">
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">Mis casos activos</span>
+            <button onclick="showSection('casos', document.querySelectorAll('.nav-item')[1])" style="font-size:0.78rem;color:var(--gold);background:none;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;">Ver todos</button>
+          </div>
+          <div class="card-body" id="resumenCasos">
+            <div class="loading">Cargando...</div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">Mensajes recientes</span>
+            <button onclick="showSection('mensajes', document.querySelectorAll('.nav-item')[2])" style="font-size:0.78rem;color:var(--gold);background:none;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;">Ver todos</button>
+          </div>
+          <div class="card-body" id="resumenMensajes">
+            <div class="loading">Cargando...</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CASOS -->
+    <div class="section" id="sec-casos">
+      <div id="listaCasos"><div class="loading">Cargando casos...</div></div>
+    </div>
+
+    <!-- MENSAJES -->
+    <div class="section" id="sec-mensajes">
+      <div class="chat-layout">
+        <div class="chat-list">
+          <div class="chat-list-header">Conversaciones</div>
+          <div id="chatList"><div class="loading">Cargando...</div></div>
+        </div>
+        <div class="chat-window" id="chatWindow">
+          <div class="empty-chat">
+            <div class="empty-icon">💬</div>
+            <div style="font-size:0.9rem;font-weight:500;margin-bottom:0.4rem;">Selecciona una conversación</div>
+            <div style="font-size:0.82rem;">Cuando un abogado acepte tu caso aparecerá aquí</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PERFIL -->
+    <div class="section" id="sec-perfil">
+      <div class="card" style="max-width:580px;">
+        <div class="card-header"><span class="card-title">Mi información</span></div>
+        <div class="card-body">
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Nombre</label>
+              <input class="form-input" id="perfil_nombre" placeholder="Tu nombre">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Apellidos</label>
+              <input class="form-input" id="perfil_apellidos" placeholder="Tus apellidos">
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Correo electrónico</label>
+            <input class="form-input" id="perfil_email" disabled style="opacity:0.6;">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Teléfono</label>
+            <input class="form-input" id="perfil_telefono" placeholder="+52 951 234 5678">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Estado</label>
+            <input class="form-input" id="perfil_estado" placeholder="Tu estado">
+          </div>
+          <button class="save-btn" onclick="guardarPerfil()">Guardar cambios</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { getFirestore, doc, getDoc, updateDoc, collection, query, where, getDocs, addDoc, onSnapshot, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCn08o2CClY1yEnK686lZ662E4_3kDQWrM",
+  authDomain: "abogaia-2236.firebaseapp.com",
+  projectId: "abogaia-2236",
+  storageBucket: "abogaia-2236.firebasestorage.app",
+  messagingSenderId: "614300759506",
+  appId: "1:614300759506:web:a92048cb2d20b2ab89840b"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+let currentUser = null;
+let clienteData = null;
+let activeChat = null;
+let unsubscribeMessages = null;
+
+onAuthStateChanged(auth, async (user) => {
+  if (!user) { window.location.href = 'login.html?tipo=cliente'; return; }
+  currentUser = user;
+  await cargarPerfil(user);
+});
+
+async function cargarPerfil(user) {
+  try {
+    const docSnap = await getDoc(doc(db, "clientes", user.uid));
+    if (docSnap.exists()) {
+      clienteData = docSnap.data();
+      const nombre = clienteData.nombre || 'Cliente';
+      document.getElementById('clientName').textContent = `${nombre} ${clienteData.apellidos || ''}`.trim();
+      document.getElementById('clientAvatar').textContent = nombre[0].toUpperCase();
+      document.getElementById('welcomeName').textContent = nombre;
+      document.getElementById('perfil_nombre').value = clienteData.nombre || '';
+      document.getElementById('perfil_apellidos').value = clienteData.apellidos || '';
+      document.getElementById('perfil_email').value = user.email || '';
+      document.getElementById('perfil_telefono').value = clienteData.telefono || '';
+      document.getElementById('perfil_estado').value = clienteData.estado || '';
+    } else {
+      document.getElementById('clientName').textContent = user.email.split('@')[0];
+      document.getElementById('welcomeName').textContent = user.email.split('@')[0];
+      document.getElementById('perfil_email').value = user.email || '';
+    }
+    await cargarCasos();
+    await cargarChats();
+  } catch(e) {
+    console.error(e);
+  }
+}
+
+async function cargarCasos() {
+  // Por ahorita mostramos el caso del perfil del cliente
+  const resumen = document.getElementById('resumenCasos');
+  const lista = document.getElementById('listaCasos');
+
+  if (clienteData?.tipoCaso) {
+    const casoHTML = `
+      <div class="caso-card">
+        <div class="caso-header">
+          <span class="caso-title">${clienteData.tipoCaso}</span>
+          <span class="badge badge-pending">En búsqueda de abogado</span>
+        </div>
+        <div class="caso-desc">Estamos buscando el abogado ideal para tu caso. Te notificaremos cuando uno acepte.</div>
+      </div>`;
+    resumen.innerHTML = casoHTML;
+    lista.innerHTML = casoHTML;
+  } else {
+    const empty = `<div style="text-align:center;padding:1.5rem;color:var(--muted2);font-size:0.85rem;">
+      No tienes casos activos aún.<br>
+      <a href="index.html" style="color:var(--gold);text-decoration:none;margin-top:0.5rem;display:inline-block;">Buscar un abogado →</a>
+    </div>`;
+    resumen.innerHTML = empty;
+    lista.innerHTML = empty;
+  }
+}
+
+async function cargarChats() {
+  // Load conversations where this client is involved
+  const q = query(collection(db, "conversaciones"), where("clienteId", "==", currentUser.uid));
+  const snap = await getDocs(q);
+
+  const chatList = document.getElementById('chatList');
+  const resumeMsgs = document.getElementById('resumenMensajes');
+
+  if (snap.empty) {
+    chatList.innerHTML = `<div style="padding:1.25rem;text-align:center;color:var(--muted2);font-size:0.82rem;">Sin conversaciones aún.<br>Cuando un abogado acepte tu caso, el chat aparecerá aquí.</div>`;
+    resumeMsgs.innerHTML = `<div style="text-align:center;padding:1rem;color:var(--muted2);font-size:0.82rem;">Sin mensajes aún.</div>`;
+    return;
+  }
+
+  chatList.innerHTML = '';
+  snap.docs.forEach(docSnap => {
+    const conv = docSnap.data();
+    const item = document.createElement('div');
+    item.className = 'chat-item';
+    item.innerHTML = `
+      <div class="chat-avatar">${(conv.abogadoNombre || 'A')[4] || 'A'}</div>
+      <div style="flex:1;min-width:0;">
+        <div class="chat-item-name">${conv.abogadoNombre || 'Abogado'}</div>
+        <div class="chat-item-preview">${conv.ultimoMensaje || 'Sin mensajes aún'}</div>
+      </div>
+    `;
+    item.onclick = () => abrirChat(docSnap.id, conv);
+    chatList.appendChild(item);
+  });
+
+  resumeMsgs.innerHTML = snap.docs.slice(0, 2).map(d => {
+    const c = d.data();
+    return `<div style="display:flex;align-items:center;gap:0.75rem;padding:0.5rem 0;border-bottom:1px solid var(--border);">
+      <div style="width:32px;height:32px;border-radius:50%;background:var(--surface2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:0.8rem;flex-shrink:0;">⚖️</div>
+      <div><div style="font-size:0.85rem;font-weight:500;">${c.abogadoNombre || 'Abogado'}</div>
+      <div style="font-size:0.75rem;color:var(--muted2);">${c.ultimoMensaje || 'Sin mensajes'}</div></div>
+    </div>`;
+  }).join('');
+}
+
+function abrirChat(convId, conv) {
+  activeChat = convId;
+  document.querySelectorAll('.chat-item').forEach(i => i.classList.remove('active'));
+  event.currentTarget.classList.add('active');
+
+  const win = document.getElementById('chatWindow');
+  win.innerHTML = `
+    <div class="chat-window-header">
+      <div class="chat-avatar" style="width:36px;height:36px;font-size:0.85rem;">⚖️</div>
+      <div>
+        <div class="chat-window-name">${conv.abogadoNombre || 'Abogado'}</div>
+        <div class="chat-window-status">● En línea</div>
+      </div>
+    </div>
+    <div class="chat-messages" id="chatMessages"></div>
+    <div class="chat-input-area">
+      <input class="chat-input" id="msgInput" placeholder="Escribe un mensaje..." onkeydown="if(event.key==='Enter') enviarMensaje('${convId}')">
+      <button class="send-btn" onclick="enviarMensaje('${convId}')">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0a0c10" stroke-width="2.5"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+      </button>
+    </div>
+  `;
+
+  // Listen to messages in real time
+  if (unsubscribeMessages) unsubscribeMessages();
+  const msgsQuery = query(collection(db, "conversaciones", convId, "mensajes"), orderBy("timestamp", "asc"));
+  unsubscribeMessages = onSnapshot(msgsQuery, (snap) => {
+    const container = document.getElementById('chatMessages');
+    if (!container) return;
+    container.innerHTML = '';
+    snap.docs.forEach(d => {
+      const msg = d.data();
+      const isSent = msg.senderId === currentUser.uid;
+      const div = document.createElement('div');
+      div.className = `msg ${isSent ? 'sent' : 'received'}`;
+      div.innerHTML = `
+        ${!isSent ? `<div class="msg-avatar">⚖️</div>` : ''}
+        <div>
+          <div class="msg-bubble">${msg.text}</div>
+          <div class="msg-time">${msg.timestamp ? new Date(msg.timestamp.toDate()).toLocaleTimeString('es-MX', {hour:'2-digit',minute:'2-digit'}) : 'Ahora'}</div>
+        </div>
+        ${isSent ? `<div class="msg-avatar">${(clienteData?.nombre || 'C')[0]}</div>` : ''}
+      `;
+      container.appendChild(div);
+    });
+    container.scrollTop = container.scrollHeight;
+  });
+}
+
+window.enviarMensaje = async function(convId) {
+  const input = document.getElementById('msgInput');
+  const text = input.value.trim();
+  if (!text) return;
+  input.value = '';
+
+  await addDoc(collection(db, "conversaciones", convId, "mensajes"), {
+    text,
+    senderId: currentUser.uid,
+    senderNombre: clienteData?.nombre || 'Cliente',
+    senderTipo: 'cliente',
+    timestamp: serverTimestamp()
+  });
+
+  await updateDoc(doc(db, "conversaciones", convId), {
+    ultimoMensaje: text,
+    ultimaActualizacion: serverTimestamp()
+  });
+}
+
+window.guardarPerfil = async function() {
+  const btn = event.target;
+  btn.textContent = 'Guardando...';
+  btn.disabled = true;
+  try {
+    await updateDoc(doc(db, "clientes", currentUser.uid), {
+      nombre: document.getElementById('perfil_nombre').value,
+      apellidos: document.getElementById('perfil_apellidos').value,
+      telefono: document.getElementById('perfil_telefono').value,
+      estado: document.getElementById('perfil_estado').value,
+    });
+    btn.textContent = '✅ Guardado';
+    setTimeout(() => { btn.textContent = 'Guardar cambios'; btn.disabled = false; }, 2000);
+  } catch(e) {
+    btn.textContent = 'Error';
+    btn.disabled = false;
+  }
+}
+
+window.cerrarSesion = async function() {
+  await signOut(auth);
+  window.location.href = 'login.html';
+}
+</script>
+
+<script>
+const titles = { inicio: 'Inicio', casos: 'Mis casos', mensajes: 'Mensajes', perfil: 'Mi perfil' };
+
+function showSection(name, navEl) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('sec-' + name).classList.add('active');
+  document.getElementById('pageTitle').textContent = titles[name];
+  if (navEl) navEl.classList.add('active');
+}
+</script>
+</body>
+</html>
