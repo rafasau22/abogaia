@@ -1,0 +1,1621 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Abogaia — Panel del Abogado</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0a0c10;
+  --surface: #111318;
+  --surface2: #181c24;
+  --border: #1f2433;
+  --gold: #c9a84c;
+  --gold-light: #e8c97a;
+  --gold-dim: rgba(201,168,76,0.12);
+  --text: #e8e6e0;
+  --muted: #5a6070;
+  --muted2: #8892a0;
+  --accent: #3b6fff;
+  --success: #22c55e;
+  --warning: #f59e0b;
+  --danger: #ef4444;
+  --sidebar-w: 240px;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  min-height: 100vh;
+  display: flex;
+}
+
+/* SIDEBAR */
+.sidebar {
+  width: var(--sidebar-w);
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  top: 0; left: 0; bottom: 0;
+  z-index: 50;
+}
+
+.sidebar-logo {
+  padding: 1.5rem;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.logo-icon {
+  width: 36px; height: 36px;
+  background: linear-gradient(135deg, var(--gold), #8a6020);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Playfair Display', serif;
+  font-weight: 700;
+  color: #0a0c10;
+  font-size: 1rem;
+}
+
+.logo-name {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.3rem;
+  color: var(--gold);
+  font-weight: 700;
+}
+
+/* LAWYER PROFILE */
+.sidebar-profile {
+  padding: 1.25rem;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.profile-avatar {
+  width: 42px; height: 42px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--surface2), var(--border));
+  border: 2px solid var(--gold);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Playfair Display', serif;
+  font-size: 1rem;
+  color: var(--gold);
+  flex-shrink: 0;
+}
+
+.profile-info { flex: 1; min-width: 0; }
+.profile-name {
+  font-size: 0.85rem;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.profile-specialty {
+  font-size: 0.72rem;
+  color: var(--gold);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* NAV */
+.sidebar-nav {
+  flex: 1;
+  padding: 1rem 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.nav-section-label {
+  font-size: 0.65rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--muted);
+  padding: 0.5rem 0.75rem;
+  margin-top: 0.5rem;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.65rem 0.75rem;
+  border-radius: 10px;
+  font-size: 0.85rem;
+  color: var(--muted2);
+  cursor: pointer;
+  transition: all 0.2s;
+  border: none;
+  background: none;
+  width: 100%;
+  text-align: left;
+  font-family: 'DM Sans', sans-serif;
+}
+
+.nav-item:hover {
+  background: var(--surface2);
+  color: var(--text);
+}
+
+.nav-item.active {
+  background: var(--gold-dim);
+  color: var(--gold);
+  font-weight: 500;
+}
+
+.nav-item .icon { font-size: 1.1rem; width: 20px; text-align: center; }
+
+.nav-badge {
+  margin-left: auto;
+  background: var(--danger);
+  color: white;
+  font-size: 0.65rem;
+  font-weight: 600;
+  padding: 0.1rem 0.45rem;
+  border-radius: 100px;
+}
+
+/* SUBSCRIPTION BADGE */
+.sidebar-sub {
+  padding: 1rem;
+  margin: 0 0.75rem 1rem;
+  background: var(--gold-dim);
+  border: 1px solid rgba(201,168,76,0.2);
+  border-radius: 12px;
+}
+
+.sub-label {
+  font-size: 0.7rem;
+  color: var(--gold);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 0.3rem;
+}
+
+.sub-plan {
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.sub-expires {
+  font-size: 0.72rem;
+  color: var(--muted2);
+}
+
+/* MAIN */
+.main {
+  margin-left: var(--sidebar-w);
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* TOPBAR */
+.topbar {
+  background: rgba(10,12,16,0.8);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border);
+  padding: 0 2rem;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 40;
+}
+
+.topbar-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.2rem;
+  font-weight: 700;
+}
+
+.topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.notif-btn {
+  position: relative;
+  width: 36px; height: 36px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: all 0.2s;
+}
+
+.notif-btn:hover { border-color: var(--gold); }
+
+.notif-dot {
+  position: absolute;
+  top: 6px; right: 6px;
+  width: 7px; height: 7px;
+  background: var(--danger);
+  border-radius: 50%;
+  border: 1.5px solid var(--bg);
+}
+
+.status-pill {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.78rem;
+  background: rgba(34,197,94,0.1);
+  border: 1px solid rgba(34,197,94,0.2);
+  color: var(--success);
+  padding: 0.3rem 0.75rem;
+  border-radius: 100px;
+}
+
+.status-dot {
+  width: 6px; height: 6px;
+  background: var(--success);
+  border-radius: 50%;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+/* CONTENT */
+.content {
+  padding: 2rem;
+  flex: 1;
+}
+
+.section { display: none; }
+.section.active { display: block; animation: fadeIn 0.3s forwards; }
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* STATS GRID */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.stat-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 1.25rem;
+  transition: all 0.2s;
+}
+
+.stat-card:hover { border-color: rgba(201,168,76,0.3); transform: translateY(-2px); }
+
+.stat-label {
+  font-size: 0.75rem;
+  color: var(--muted2);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 0.75rem;
+}
+
+.stat-value {
+  font-family: 'Playfair Display', serif;
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--gold);
+  line-height: 1;
+  margin-bottom: 0.4rem;
+}
+
+.stat-change {
+  font-size: 0.75rem;
+  color: var(--success);
+}
+
+/* GRID 2 COL */
+.grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+/* CARD */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.card-header {
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.card-title {
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.card-action {
+  font-size: 0.78rem;
+  color: var(--gold);
+  cursor: pointer;
+  background: none;
+  border: none;
+  font-family: 'DM Sans', sans-serif;
+}
+
+.card-body { padding: 1.25rem 1.5rem; }
+
+/* CLIENT ITEMS */
+.client-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid var(--border);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.client-item:last-child { border-bottom: none; }
+.client-item:hover { opacity: 0.8; }
+
+.client-avatar {
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+  flex-shrink: 0;
+}
+
+.client-info { flex: 1; min-width: 0; }
+.client-name { font-size: 0.85rem; font-weight: 500; }
+.client-case { font-size: 0.75rem; color: var(--muted2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+.client-meta { text-align: right; flex-shrink: 0; }
+.client-time { font-size: 0.72rem; color: var(--muted); }
+
+/* STATUS BADGES */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.7rem;
+  font-weight: 500;
+  padding: 0.2rem 0.6rem;
+  border-radius: 100px;
+}
+
+.badge-new { background: rgba(59,111,255,0.12); color: #7aa0ff; border: 1px solid rgba(59,111,255,0.2); }
+.badge-active { background: rgba(34,197,94,0.1); color: var(--success); border: 1px solid rgba(34,197,94,0.2); }
+.badge-pending { background: rgba(245,158,11,0.1); color: var(--warning); border: 1px solid rgba(245,158,11,0.2); }
+.badge-closed { background: rgba(90,96,112,0.15); color: var(--muted2); border: 1px solid var(--border); }
+
+/* CASES TABLE */
+.cases-table { width: 100%; border-collapse: collapse; }
+.cases-table th {
+  text-align: left;
+  font-size: 0.72rem;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 0 1rem 0.75rem;
+  font-weight: 500;
+}
+
+.cases-table td {
+  padding: 0.85rem 1rem;
+  font-size: 0.85rem;
+  border-top: 1px solid var(--border);
+}
+
+.cases-table tr:hover td { background: var(--surface2); }
+
+/* MESSAGES */
+.msg-item {
+  display: flex;
+  gap: 0.75rem;
+  padding: 0.9rem 0;
+  border-bottom: 1px solid var(--border);
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.msg-item:hover { opacity: 0.8; }
+.msg-item:last-child { border-bottom: none; }
+
+.msg-avatar {
+  width: 38px; height: 38px;
+  border-radius: 50%;
+  background: var(--surface2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.85rem;
+  flex-shrink: 0;
+  border: 1px solid var(--border);
+}
+
+.msg-info { flex: 1; min-width: 0; }
+.msg-name { font-size: 0.85rem; font-weight: 600; margin-bottom: 0.2rem; }
+.msg-preview { font-size: 0.78rem; color: var(--muted2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+.msg-meta { text-align: right; flex-shrink: 0; }
+.msg-time { font-size: 0.7rem; color: var(--muted); margin-bottom: 0.3rem; }
+.msg-unread {
+  width: 18px; height: 18px;
+  background: var(--gold);
+  color: #0a0c10;
+  border-radius: 50%;
+  font-size: 0.65rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: auto;
+}
+
+/* PROFILE FORM */
+.form-group { margin-bottom: 1.25rem; }
+.form-label {
+  display: block;
+  font-size: 0.75rem;
+  color: var(--muted2);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+}
+
+.form-input, .form-select, .form-textarea {
+  width: 100%;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 0.75rem 1rem;
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.9rem;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.form-input:focus, .form-select:focus, .form-textarea:focus {
+  border-color: rgba(201,168,76,0.4);
+}
+
+.form-select option { background: var(--surface2); }
+.form-textarea { resize: vertical; min-height: 90px; }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+
+.save-btn {
+  padding: 0.8rem 2rem;
+  background: var(--gold);
+  color: #0a0c10;
+  border: none;
+  border-radius: 10px;
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.save-btn:hover { background: var(--gold-light); }
+
+/* RATING STARS */
+.stars { color: #fbbf24; font-size: 1rem; }
+
+/* CHART BAR */
+.chart-bar-group { margin-bottom: 1rem; }
+.chart-bar-label {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.78rem;
+  color: var(--muted2);
+  margin-bottom: 0.4rem;
+}
+
+.chart-bar-track {
+  height: 8px;
+  background: var(--surface2);
+  border-radius: 100px;
+  overflow: hidden;
+}
+
+.chart-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--gold), var(--gold-light));
+  border-radius: 100px;
+  transition: width 1s ease;
+}
+
+/* SUBSCRIPTION */
+.sub-card {
+  background: linear-gradient(135deg, rgba(201,168,76,0.1), rgba(201,168,76,0.04));
+  border: 1px solid rgba(201,168,76,0.25);
+  border-radius: 16px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.sub-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 1.25rem;
+}
+
+.sub-plan-name {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.4rem;
+  color: var(--gold);
+  margin-bottom: 0.25rem;
+}
+
+.sub-price {
+  font-size: 0.9rem;
+  color: var(--muted2);
+}
+
+.sub-features {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+  margin-bottom: 1.25rem;
+}
+
+.sub-feature {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.82rem;
+  color: var(--muted2);
+}
+
+.sub-feature .check { color: var(--success); }
+
+.upgrade-btn {
+  padding: 0.7rem 1.5rem;
+  background: var(--gold);
+  color: #0a0c10;
+  border: none;
+  border-radius: 10px;
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 600;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.upgrade-btn:hover { background: var(--gold-light); }
+
+/* PAYMENT HISTORY */
+.payment-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.85rem 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 0.85rem;
+}
+
+.payment-item:last-child { border-bottom: none; }
+.payment-amount { color: var(--success); font-weight: 600; }
+
+/* NEW CLIENT HIGHLIGHT */
+.new-client-banner {
+  background: linear-gradient(135deg, rgba(59,111,255,0.1), rgba(59,111,255,0.04));
+  border: 1px solid rgba(59,111,255,0.2);
+  border-radius: 14px;
+  padding: 1.25rem;
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  animation: slideIn 0.4s forwards;
+}
+
+.new-client-banner:hover { border-color: rgba(59,111,255,0.4); }
+
+@keyframes slideIn {
+  from { opacity: 0; transform: translateX(-10px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+.new-client-icon {
+  width: 48px; height: 48px;
+  background: rgba(59,111,255,0.15);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4rem;
+  flex-shrink: 0;
+}
+
+.new-client-info { flex: 1; }
+.new-client-title { font-weight: 600; margin-bottom: 0.25rem; }
+.new-client-desc { font-size: 0.82rem; color: var(--muted2); }
+
+.accept-btn {
+  padding: 0.6rem 1.2rem;
+  background: var(--accent);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 500;
+  font-size: 0.82rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+
+.accept-btn:hover { background: #2a5fee; }
+
+/* SCROLLBAR */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-icon">A</div>
+    <span class="logo-name">Abogaia</span>
+  </div>
+
+  <div class="sidebar-profile">
+    <div class="profile-avatar">PM</div>
+    <div class="profile-info">
+      <div class="profile-name">Lic. Patricia Morales</div>
+      <div class="profile-specialty">Seguros · Reclamaciones</div>
+    </div>
+  </div>
+
+  <nav class="sidebar-nav">
+    <span class="nav-section-label">Principal</span>
+    <button class="nav-item active" onclick="showSection('inicio', this)">
+      <span class="icon">🏠</span> Inicio
+    </button>
+    <button class="nav-item" onclick="showSection('clientes', this)">
+      <span class="icon">👥</span> Clientes nuevos
+      <span class="nav-badge">3</span>
+    </button>
+    <button class="nav-item" onclick="showSection('casos', this)">
+      <span class="icon">📂</span> Mis casos
+    </button>
+    <button class="nav-item" onclick="showSection('mensajes', this)">
+      <span class="icon">💬</span> Mensajes
+      <span class="nav-badge">5</span>
+    </button>
+
+    <span class="nav-section-label">Mi cuenta</span>
+    <button class="nav-item" onclick="showSection('estadisticas', this)">
+      <span class="icon">📊</span> Estadísticas
+    </button>
+    <button class="nav-item" onclick="showSection('perfil', this)">
+      <span class="icon">⚖️</span> Mi perfil
+    </button>
+    <button class="nav-item" onclick="showSection('suscripcion', this)">
+      <span class="icon">💳</span> Suscripción
+    </button>
+  </nav>
+
+  <div class="sidebar-sub">
+    <div class="sub-label">Plan activo</div>
+    <div class="sub-plan">Pro ⭐</div>
+    <div class="sub-expires">Vence: 12 junio 2026</div>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<main class="main">
+  <header class="topbar">
+    <div class="topbar-title" id="pageTitle">Inicio</div>
+    <div class="topbar-right">
+      <a href="index.html" style="padding:0.4rem 0.9rem;background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.3);color:var(--gold);border-radius:8px;font-size:0.78rem;font-family:'DM Sans',sans-serif;font-weight:500;text-decoration:none;">👤 Ver app cliente</a>
+      <div class="status-pill">
+        <div class="status-dot"></div>
+        Disponible
+      </div>
+      <div class="notif-btn">🔔<div class="notif-dot"></div></div>
+      <button onclick="cerrarSesion()" style="padding:0.4rem 0.9rem;background:none;border:1px solid var(--border);border-radius:8px;font-size:0.78rem;color:var(--muted);font-family:'DM Sans',sans-serif;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.borderColor='#ef4444';this.style.color='#ef4444'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--muted)'">Salir</button>
+    </div>
+  </header>
+
+  <div class="content">
+
+    <!-- INICIO -->
+    <div class="section active" id="sec-inicio">
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-label">Clientes este mes</div>
+          <div class="stat-value">12</div>
+          <div class="stat-change">↑ 3 más que el mes pasado</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Casos activos</div>
+          <div class="stat-value">8</div>
+          <div class="stat-change">↑ 2 nuevos esta semana</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Tasa de éxito</div>
+          <div class="stat-value">87<span style="font-size:1.2rem">%</span></div>
+          <div class="stat-change">↑ 5% vs trimestre anterior</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Calificación</div>
+          <div class="stat-value">4.8</div>
+          <div class="stat-change">⭐ 214 reseñas</div>
+        </div>
+      </div>
+
+      <!-- NEW CLIENT ALERT -->
+      <div class="new-client-banner">
+        <div class="new-client-icon">🆕</div>
+        <div class="new-client-info">
+          <div class="new-client-title">Nuevo cliente asignado por IA</div>
+          <div class="new-client-desc">Roberto Sánchez · Reclamación AXA por vehículo robado · Oaxaca · Urgente</div>
+        </div>
+        <button class="accept-btn" onclick="showSection('clientes', document.querySelector('.nav-item:nth-child(3)'))">Ver caso →</button>
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">Últimos clientes</span>
+            <button class="card-action" onclick="showSection('clientes', document.querySelectorAll('.nav-item')[2])">Ver todos</button>
+          </div>
+          <div class="card-body">
+            <div class="client-item">
+              <div class="client-avatar">RS</div>
+              <div class="client-info">
+                <div class="client-name">Roberto Sánchez</div>
+                <div class="client-case">Reclamación AXA · Seguro auto</div>
+              </div>
+              <div class="client-meta">
+                <div class="client-time">Hace 10 min</div>
+                <div style="margin-top:0.3rem"><span class="badge badge-new">Nuevo</span></div>
+              </div>
+            </div>
+            <div class="client-item">
+              <div class="client-avatar">MG</div>
+              <div class="client-info">
+                <div class="client-name">María González</div>
+                <div class="client-case">Seguro de vida · GNP</div>
+              </div>
+              <div class="client-meta">
+                <div class="client-time">Ayer</div>
+                <div style="margin-top:0.3rem"><span class="badge badge-active">Activo</span></div>
+              </div>
+            </div>
+            <div class="client-item">
+              <div class="client-avatar">JL</div>
+              <div class="client-info">
+                <div class="client-name">Jorge López</div>
+                <div class="client-case">Daños · MAPFRE</div>
+              </div>
+              <div class="client-meta">
+                <div class="client-time">Lun</div>
+                <div style="margin-top:0.3rem"><span class="badge badge-pending">En proceso</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">Mensajes recientes</span>
+            <button class="card-action" onclick="showSection('mensajes', document.querySelectorAll('.nav-item')[3])">Ver todos</button>
+          </div>
+          <div class="card-body">
+            <div class="msg-item">
+              <div class="msg-avatar">RS</div>
+              <div class="msg-info">
+                <div class="msg-name">Roberto Sánchez</div>
+                <div class="msg-preview">¿Cuándo podemos hablar sobre mi caso?</div>
+              </div>
+              <div class="msg-meta">
+                <div class="msg-time">10:32</div>
+                <div class="msg-unread">2</div>
+              </div>
+            </div>
+            <div class="msg-item">
+              <div class="msg-avatar">MG</div>
+              <div class="msg-info">
+                <div class="msg-name">María González</div>
+                <div class="msg-preview">Ya mandé los documentos que me pidió</div>
+              </div>
+              <div class="msg-meta">
+                <div class="msg-time">Ayer</div>
+                <div class="msg-unread">1</div>
+              </div>
+            </div>
+            <div class="msg-item">
+              <div class="msg-avatar">JL</div>
+              <div class="msg-info">
+                <div class="msg-name">Jorge López</div>
+                <div class="msg-preview">Gracias por la actualización Licenciada</div>
+              </div>
+              <div class="msg-meta">
+                <div class="msg-time">Lun</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CLIENTES NUEVOS -->
+    <div class="section" id="sec-clientes">
+      <p style="color:var(--muted2);font-size:0.85rem;margin-bottom:1.5rem;">La IA de Abogaia analizó estos casos y los asignó a tu perfil.</p>
+
+      <div style="display:flex;flex-direction:column;gap:1rem;">
+        <div class="card" style="border-color:rgba(59,111,255,0.25)">
+          <div class="card-body">
+            <div style="display:flex;align-items:flex-start;gap:1rem;">
+              <div class="client-avatar" style="width:48px;height:48px;font-size:1rem;">RS</div>
+              <div style="flex:1">
+                <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:0.5rem;">
+                  <span style="font-weight:600">Roberto Sánchez</span>
+                  <span class="badge badge-new">Nuevo · Urgente</span>
+                </div>
+                <div style="font-size:0.85rem;color:var(--muted2);margin-bottom:0.75rem;line-height:1.6;">
+                  Reclamación a AXA Seguros por vehículo robado (Jetta 2017). La aseguradora negó el pago alegando cláusula de exclusión. Cliente intentó conciliación en CONDUSEF sin éxito. Busca litigio.
+                </div>
+                <div style="display:flex;gap:0.5rem;flex-wrap:wrap;margin-bottom:1rem;">
+                  <span class="badge badge-new">📍 Oaxaca</span>
+                  <span class="badge badge-new">🛡️ Seguros</span>
+                  <span class="badge badge-new">🚗 Auto</span>
+                  <span class="badge badge-new">CONDUSEF</span>
+                </div>
+                <div style="display:flex;gap:0.75rem;">
+                  <button class="accept-btn">✅ Aceptar caso</button>
+                  <button style="padding:0.6rem 1.2rem;background:none;border:1px solid var(--border);color:var(--muted2);border-radius:10px;font-family:'DM Sans',sans-serif;cursor:pointer;font-size:0.82rem;">Declinar</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-body">
+            <div style="display:flex;align-items:flex-start;gap:1rem;">
+              <div class="client-avatar" style="width:48px;height:48px;font-size:1rem;">AL</div>
+              <div style="flex:1">
+                <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:0.5rem;">
+                  <span style="font-weight:600">Ana Luisa Pérez</span>
+                  <span class="badge badge-pending">Nuevo</span>
+                </div>
+                <div style="font-size:0.85rem;color:var(--muted2);margin-bottom:0.75rem;line-height:1.6;">
+                  Seguro de gastos médicos mayores. Hospital niega cobertura por supuesta condición preexistente no declarada. Monto reclamado: $180,000 MXN.
+                </div>
+                <div style="display:flex;gap:0.5rem;flex-wrap:wrap;margin-bottom:1rem;">
+                  <span class="badge badge-pending">📍 CDMX</span>
+                  <span class="badge badge-pending">🏥 GMM</span>
+                  <span class="badge badge-pending">$180,000 MXN</span>
+                </div>
+                <div style="display:flex;gap:0.75rem;">
+                  <button class="accept-btn">✅ Aceptar caso</button>
+                  <button style="padding:0.6rem 1.2rem;background:none;border:1px solid var(--border);color:var(--muted2);border-radius:10px;font-family:'DM Sans',sans-serif;cursor:pointer;font-size:0.82rem;">Declinar</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-body">
+            <div style="display:flex;align-items:flex-start;gap:1rem;">
+              <div class="client-avatar" style="width:48px;height:48px;font-size:1rem;">CR</div>
+              <div style="flex:1">
+                <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:0.5rem;">
+                  <span style="font-weight:600">Carlos Ramírez</span>
+                  <span class="badge badge-pending">Nuevo</span>
+                </div>
+                <div style="font-size:0.85rem;color:var(--muted2);margin-bottom:0.75rem;line-height:1.6;">
+                  Accidente vial. Seguro del tercero responsable (Qualitas) no quiere cubrir daños totales. Cliente tiene póliza vigente y fotos del siniestro.
+                </div>
+                <div style="display:flex;gap:0.5rem;flex-wrap:wrap;margin-bottom:1rem;">
+                  <span class="badge badge-pending">📍 Guadalajara</span>
+                  <span class="badge badge-pending">🚗 Daños viales</span>
+                  <span class="badge badge-pending">Qualitas</span>
+                </div>
+                <div style="display:flex;gap:0.75rem;">
+                  <button class="accept-btn">✅ Aceptar caso</button>
+                  <button style="padding:0.6rem 1.2rem;background:none;border:1px solid var(--border);color:var(--muted2);border-radius:10px;font-family:'DM Sans',sans-serif;cursor:pointer;font-size:0.82rem;">Declinar</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CASOS -->
+    <div class="section" id="sec-casos">
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">Todos mis casos</span>
+          <span style="font-size:0.78rem;color:var(--muted2)">8 casos activos</span>
+        </div>
+        <table class="cases-table">
+          <thead>
+            <tr>
+              <th>Cliente</th>
+              <th>Tipo de caso</th>
+              <th>Estado</th>
+              <th>Fecha</th>
+              <th>Acción</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Roberto Sánchez</strong></td>
+              <td style="color:var(--muted2)">Reclamación AXA · Auto</td>
+              <td><span class="badge badge-new">Nuevo</span></td>
+              <td style="color:var(--muted2)">Hoy</td>
+              <td><button style="font-size:0.78rem;color:var(--gold);background:none;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;">Ver →</button></td>
+            </tr>
+            <tr>
+              <td><strong>María González</strong></td>
+              <td style="color:var(--muted2)">Seguro de vida · GNP</td>
+              <td><span class="badge badge-active">Activo</span></td>
+              <td style="color:var(--muted2)">15 abr</td>
+              <td><button style="font-size:0.78rem;color:var(--gold);background:none;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;">Ver →</button></td>
+            </tr>
+            <tr>
+              <td><strong>Jorge López</strong></td>
+              <td style="color:var(--muted2)">Daños · MAPFRE</td>
+              <td><span class="badge badge-pending">En proceso</span></td>
+              <td style="color:var(--muted2)">10 abr</td>
+              <td><button style="font-size:0.78rem;color:var(--gold);background:none;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;">Ver →</button></td>
+            </tr>
+            <tr>
+              <td><strong>Sofía Hernández</strong></td>
+              <td style="color:var(--muted2)">GMM · Cigna</td>
+              <td><span class="badge badge-pending">En proceso</span></td>
+              <td style="color:var(--muted2)">2 abr</td>
+              <td><button style="font-size:0.78rem;color:var(--gold);background:none;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;">Ver →</button></td>
+            </tr>
+            <tr>
+              <td><strong>Luis Mendoza</strong></td>
+              <td style="color:var(--muted2)">Robo · HDI</td>
+              <td><span class="badge badge-closed">Cerrado ✓</span></td>
+              <td style="color:var(--muted2)">15 mar</td>
+              <td><button style="font-size:0.78rem;color:var(--gold);background:none;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;">Ver →</button></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- MENSAJES -->
+    <div class="section" id="sec-mensajes">
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-header"><span class="card-title">Conversaciones</span></div>
+          <div class="card-body">
+            <div class="msg-item">
+              <div class="msg-avatar">RS</div>
+              <div class="msg-info">
+                <div class="msg-name">Roberto Sánchez</div>
+                <div class="msg-preview">¿Cuándo podemos hablar sobre mi caso?</div>
+              </div>
+              <div class="msg-meta">
+                <div class="msg-time">10:32</div>
+                <div class="msg-unread">2</div>
+              </div>
+            </div>
+            <div class="msg-item">
+              <div class="msg-avatar">MG</div>
+              <div class="msg-info">
+                <div class="msg-name">María González</div>
+                <div class="msg-preview">Ya mandé los documentos que me pidió</div>
+              </div>
+              <div class="msg-meta">
+                <div class="msg-time">Ayer</div>
+                <div class="msg-unread">1</div>
+              </div>
+            </div>
+            <div class="msg-item">
+              <div class="msg-avatar">JL</div>
+              <div class="msg-info">
+                <div class="msg-name">Jorge López</div>
+                <div class="msg-preview">Gracias por la actualización Licenciada</div>
+              </div>
+              <div class="msg-meta">
+                <div class="msg-time">Lun</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header"><span class="card-title">Chat — Roberto Sánchez</span></div>
+          <div style="height:280px;overflow-y:auto;padding:1rem;display:flex;flex-direction:column;gap:0.75rem;">
+            <div style="align-self:flex-start;background:var(--surface2);border:1px solid var(--border);border-radius:12px;border-top-left-radius:4px;padding:0.65rem 0.9rem;font-size:0.85rem;max-width:80%;line-height:1.5;">
+              Buenas tardes Licenciada, ¿cuándo podemos hablar sobre mi caso con AXA?
+            </div>
+            <div style="align-self:flex-end;background:var(--gold-dim);border:1px solid rgba(201,168,76,0.2);border-radius:12px;border-top-right-radius:4px;padding:0.65rem 0.9rem;font-size:0.85rem;max-width:80%;line-height:1.5;color:var(--gold-light);">
+              Hola Roberto, con gusto. Mañana a las 11am tengo disponibilidad. ¿Le parece bien?
+            </div>
+            <div style="align-self:flex-start;background:var(--surface2);border:1px solid var(--border);border-radius:12px;border-top-left-radius:4px;padding:0.65rem 0.9rem;font-size:0.85rem;max-width:80%;line-height:1.5;">
+              Perfecto, ahí estaré. Muchas gracias Licenciada 🙏
+            </div>
+          </div>
+          <div style="padding:1rem;border-top:1px solid var(--border);display:flex;gap:0.75rem;">
+            <input type="text" placeholder="Escribe un mensaje..." style="flex:1;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:0.6rem 1rem;color:var(--text);font-family:'DM Sans',sans-serif;font-size:0.85rem;outline:none;">
+            <button style="padding:0.6rem 1rem;background:var(--gold);border:none;border-radius:10px;cursor:pointer;font-size:1rem;">➤</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ESTADÍSTICAS -->
+    <div class="section" id="sec-estadisticas">
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-label">Casos ganados</div>
+          <div class="stat-value">214</div>
+          <div class="stat-change">↑ 12 este mes</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Tasa de éxito</div>
+          <div class="stat-value">87%</div>
+          <div class="stat-change">↑ 5% este año</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Calificación</div>
+          <div class="stat-value">4.8</div>
+          <div class="stat-change">⭐ 214 reseñas</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Clientes totales</div>
+          <div class="stat-value">312</div>
+          <div class="stat-change">↑ 28 este mes</div>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-header"><span class="card-title">Casos por tipo</span></div>
+          <div class="card-body">
+            <div class="chart-bar-group">
+              <div class="chart-bar-label"><span>Seguros auto</span><span>42%</span></div>
+              <div class="chart-bar-track"><div class="chart-bar-fill" style="width:42%"></div></div>
+            </div>
+            <div class="chart-bar-group">
+              <div class="chart-bar-label"><span>Gastos médicos</span><span>28%</span></div>
+              <div class="chart-bar-track"><div class="chart-bar-fill" style="width:28%"></div></div>
+            </div>
+            <div class="chart-bar-group">
+              <div class="chart-bar-label"><span>Seguro de vida</span><span>18%</span></div>
+              <div class="chart-bar-track"><div class="chart-bar-fill" style="width:18%"></div></div>
+            </div>
+            <div class="chart-bar-group">
+              <div class="chart-bar-label"><span>Daños y robo</span><span>12%</span></div>
+              <div class="chart-bar-track"><div class="chart-bar-fill" style="width:12%"></div></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header"><span class="card-title">Reseñas recientes</span></div>
+          <div class="card-body">
+            <div style="display:flex;flex-direction:column;gap:1rem;">
+              <div>
+                <div style="display:flex;justify-content:space-between;margin-bottom:0.3rem;">
+                  <span style="font-size:0.85rem;font-weight:600;">Luis M.</span>
+                  <span class="stars">★★★★★</span>
+                </div>
+                <div style="font-size:0.8rem;color:var(--muted2);line-height:1.5;">"Excelente abogada, ganó mi caso contra AXA en 3 meses."</div>
+              </div>
+              <div>
+                <div style="display:flex;justify-content:space-between;margin-bottom:0.3rem;">
+                  <span style="font-size:0.85rem;font-weight:600;">Carmen R.</span>
+                  <span class="stars">★★★★★</span>
+                </div>
+                <div style="font-size:0.8rem;color:var(--muted2);line-height:1.5;">"Muy profesional y siempre disponible para mis dudas."</div>
+              </div>
+              <div>
+                <div style="display:flex;justify-content:space-between;margin-bottom:0.3rem;">
+                  <span style="font-size:0.85rem;font-weight:600;">Pedro G.</span>
+                  <span class="stars">★★★★☆</span>
+                </div>
+                <div style="font-size:0.8rem;color:var(--muted2);line-height:1.5;">"Buen servicio, el proceso tardó más de lo esperado pero ganamos."</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PERFIL -->
+    <div class="section" id="sec-perfil">
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-header"><span class="card-title">Datos personales</span></div>
+          <div class="card-body">
+            <div class="form-group">
+              <label class="form-label">Nombre completo</label>
+              <input class="form-input" value="Lic. Patricia Morales Vega">
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Cédula profesional</label>
+                <input class="form-input" value="8472910">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Años de experiencia</label>
+                <input class="form-input" value="15">
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Especialidad principal</label>
+              <select class="form-select">
+                <option selected>Seguros y reclamaciones</option>
+                <option>Derecho penal</option>
+                <option>Derecho laboral</option>
+                <option>Derecho familiar</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Estado(s) donde ejerce</label>
+              <input class="form-input" value="Oaxaca, CDMX, Puebla">
+            </div>
+            <button class="save-btn" onclick="guardarPerfil()">Guardar cambios</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header"><span class="card-title">Mi presentación</span></div>
+          <div class="card-body">
+            <div class="form-group">
+              <label class="form-label">Descripción de perfil</label>
+              <textarea class="form-textarea" style="min-height:120px;">15 años reclamando pagos negados. Especialista en CONDUSEF y litigio contra aseguradoras. He ganado más de 200 casos contra AXA, GNP, MAPFRE y otras aseguradoras.</textarea>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Teléfono de contacto</label>
+              <input class="form-input" value="+52 951 234 5678">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Correo profesional</label>
+              <input class="form-input" value="patricia.morales@despacho.mx">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Disponibilidad</label>
+              <select class="form-select">
+                <option>Disponible para nuevos casos</option>
+                <option>Solo casos urgentes</option>
+                <option>No disponible</option>
+              </select>
+            </div>
+            <button class="save-btn">Guardar cambios</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SUSCRIPCIÓN -->
+    <div class="section" id="sec-suscripcion">
+      <div class="sub-card">
+        <div class="sub-header">
+          <div>
+            <div class="sub-plan-name">Plan Pro ⭐</div>
+            <div class="sub-price">$1,000 MXN / mes · Vence 12 junio 2026</div>
+          </div>
+          <button class="upgrade-btn">Renovar plan</button>
+        </div>
+        <div class="sub-features">
+          <div class="sub-feature"><span class="check">✓</span> Leads ilimitados</div>
+          <div class="sub-feature"><span class="check">✓</span> Perfil destacado</div>
+          <div class="sub-feature"><span class="check">✓</span> Mensajería con clientes</div>
+          <div class="sub-feature"><span class="check">✓</span> Estadísticas avanzadas</div>
+          <div class="sub-feature"><span class="check">✓</span> Soporte prioritario</div>
+          <div class="sub-feature"><span class="check">✓</span> Badge verificado</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header"><span class="card-title">Historial de pagos</span></div>
+        <div class="card-body">
+          <div class="payment-item">
+            <span>Plan Pro — Mayo 2026</span>
+            <span style="color:var(--muted2);font-size:0.8rem;">12 mayo 2026</span>
+            <span class="payment-amount">$1,000 MXN</span>
+            <span class="badge badge-active">Pagado</span>
+          </div>
+          <div class="payment-item">
+            <span>Plan Pro — Abril 2026</span>
+            <span style="color:var(--muted2);font-size:0.8rem;">12 abr 2026</span>
+            <span class="payment-amount">$1,000 MXN</span>
+            <span class="badge badge-active">Pagado</span>
+          </div>
+          <div class="payment-item">
+            <span>Plan Pro — Marzo 2026</span>
+            <span style="color:var(--muted2);font-size:0.8rem;">12 mar 2026</span>
+            <span class="payment-amount">$1,000 MXN</span>
+            <span class="badge badge-active">Pagado</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<script>
+const titles = {
+  inicio: 'Inicio',
+  clientes: 'Clientes nuevos',
+  casos: 'Mis casos',
+  mensajes: 'Mensajes',
+  estadisticas: 'Estadísticas',
+  perfil: 'Mi perfil',
+  suscripcion: 'Suscripción y pagos'
+};
+
+function showSection(name, navEl) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('sec-' + name).classList.add('active');
+  document.getElementById('pageTitle').textContent = titles[name];
+  if (navEl) navEl.classList.add('active');
+}
+</script>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { getFirestore, doc, getDoc, updateDoc, collection, getDocs, addDoc, query, where, onSnapshot, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCn08o2CClY1yEnK686lZ662E4_3kDQWrM",
+  authDomain: "abogaia-2236.firebaseapp.com",
+  projectId: "abogaia-2236",
+  storageBucket: "abogaia-2236.firebasestorage.app",
+  messagingSenderId: "614300759506",
+  appId: "1:614300759506:web:a92048cb2d20b2ab89840b"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+// Check if user is logged in
+onAuthStateChanged(auth, async (user) => {
+  if (!user) {
+    // Not logged in → redirect to login
+    window.location.href = 'login.html?tipo=abogado';
+    return;
+  }
+
+  // Load abogado data from Firestore
+  try {
+    const docRef = doc(db, "abogados", user.uid);
+    const docSnap = await getDoc(docRef);
+
+    if (docSnap.exists()) {
+      const data = docSnap.data();
+      const nombreCompleto = `Lic. ${data.nombre || ''} ${data.apellidos || ''}`.trim();
+      const especialidad = Array.isArray(data.especialidades) ? data.especialidades.join(' · ') : (data.especialidades || 'Sin especialidad');
+
+      // Update sidebar profile
+      document.querySelector('.profile-name').textContent = nombreCompleto;
+      document.querySelector('.profile-specialty').textContent = especialidad;
+      document.querySelector('.profile-avatar').textContent = (data.nombre || 'A')[0].toUpperCase();
+
+      // Update profile form
+      const nombreInput = document.querySelector('#sec-perfil .form-input');
+      if (nombreInput) nombreInput.value = nombreCompleto;
+
+      const emailInput = document.querySelector('#sec-perfil input[type="email"]') ||
+                         document.querySelectorAll('#sec-perfil .form-input')[4];
+      if (emailInput) emailInput.value = data.email || user.email || '';
+
+      const telInput = document.querySelectorAll('#sec-perfil .form-input')[3];
+      if (telInput) telInput.value = data.telefono || '';
+
+      const descTextarea = document.querySelector('#sec-perfil .form-textarea');
+      if (descTextarea) descTextarea.value = data.descripcion || '';
+
+      // Update plan info
+      const planEl = document.querySelector('.sub-plan');
+      if (planEl) planEl.textContent = data.plan === 'Pro' ? 'Pro ⭐' : 'Básico';
+
+      // Welcome message
+      document.getElementById('pageTitle').textContent = `Hola, ${data.nombre || 'Abogado'} 👋`;
+      setTimeout(() => { document.getElementById('pageTitle').textContent = 'Inicio'; }, 3000);
+
+      // Load real clients and conversations
+      await cargarClientesReales(data);
+      await cargarConversaciones(user.uid, data);
+
+    } else {
+      // If no abogado profile, maybe it's a cliente → redirect
+      window.location.href = 'index.html';
+    }
+  } catch (error) {
+    console.error('Error cargando datos:', error);
+  }
+});
+
+// Logout function
+window.cerrarSesion = async function() {
+  await signOut(auth);
+  window.location.href = 'login.html';
+}
+
+// Save profile function
+window.guardarPerfil = async function() {
+  const user = auth.currentUser;
+  if (!user) return;
+
+  const btn = event.target;
+  btn.textContent = 'Guardando...';
+  btn.disabled = true;
+
+  try {
+    const inputs = document.querySelectorAll('#sec-perfil .form-input');
+    await updateDoc(doc(db, "abogados", user.uid), {
+      telefono: inputs[3]?.value || '',
+      descripcion: document.querySelector('#sec-perfil .form-textarea')?.value || '',
+    });
+    btn.textContent = '✅ Guardado';
+    setTimeout(() => { btn.textContent = 'Guardar cambios'; btn.disabled = false; }, 2000);
+  } catch (error) {
+    btn.textContent = 'Error al guardar';
+    btn.disabled = false;
+  }
+}
+
+// Load real clients from Firestore
+async function cargarClientesReales(abogadoData) {
+  const snap = await getDocs(collection(db, "clientes"));
+  const clientes = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+  
+  if (clientes.length === 0) return;
+
+  // Update the clientes section with real data
+  const secClientes = document.getElementById('sec-clientes');
+  if (!secClientes) return;
+
+  const clientesHTML = clientes.map(c => `
+    <div class="card" style="margin-bottom:1rem;">
+      <div class="card-body">
+        <div style="display:flex;align-items:flex-start;gap:1rem;">
+          <div class="client-avatar" style="width:48px;height:48px;font-size:1rem;">${(c.nombre||'C')[0]}${(c.apellidos||'L')[0]}</div>
+          <div style="flex:1">
+            <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:0.5rem;">
+              <span style="font-weight:600">${c.nombre || ''} ${c.apellidos || ''}</span>
+              <span class="badge badge-new">Nuevo</span>
+            </div>
+            <div style="font-size:0.85rem;color:var(--muted2);margin-bottom:0.75rem;line-height:1.6;">
+              ${c.tipoCaso || 'Sin tipo de caso especificado'} · ${c.estado || 'Sin estado'}
+            </div>
+            <div style="display:flex;gap:0.5rem;flex-wrap:wrap;margin-bottom:1rem;">
+              <span class="badge badge-new">📍 ${c.estado || 'México'}</span>
+              ${c.tipoCaso ? `<span class="badge badge-new">⚖️ ${c.tipoCaso}</span>` : ''}
+            </div>
+            <div style="display:flex;gap:0.75rem;">
+              <button class="accept-btn" onclick="aceptarCaso('${c.id}', '${c.nombre} ${c.apellidos}')">✅ Aceptar caso</button>
+              <button style="padding:0.6rem 1.2rem;background:none;border:1px solid var(--border);color:var(--muted2);border-radius:10px;font-family:'DM Sans',sans-serif;cursor:pointer;font-size:0.82rem;">Declinar</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  `).join('');
+
+  // Add real clients at the top
+  const existingContent = secClientes.innerHTML;
+  secClientes.innerHTML = `
+    <div style="margin-bottom:1rem;font-size:0.85rem;color:var(--muted2);">
+      ${clientes.length} cliente(s) esperando abogado
+    </div>
+    ${clientesHTML}
+  `;
+}
+
+// Accept case and create conversation
+window.aceptarCaso = async function(clienteId, clienteNombre) {
+  const user = auth.currentUser;
+  if (!user) return;
+
+  const btn = event.target;
+  btn.textContent = 'Aceptando...';
+  btn.disabled = true;
+
+  try {
+    // Get abogado data
+    const abogadoSnap = await getDoc(doc(db, "abogados", user.uid));
+    const abogadoData = abogadoSnap.data();
+    const abogadoNombre = `Lic. ${abogadoData.nombre} ${abogadoData.apellidos}`;
+
+    // Check if conversation already exists
+    const convQuery = query(
+      collection(db, "conversaciones"),
+      where("clienteId", "==", clienteId),
+      where("abogadoId", "==", user.uid)
+    );
+    const convSnap = await getDocs(convQuery);
+
+    if (!convSnap.empty) {
+      alert('Ya tienes una conversación activa con este cliente.');
+      btn.textContent = '✅ Aceptar caso';
+      btn.disabled = false;
+      return;
+    }
+
+    // Create conversation
+    await addDoc(collection(db, "conversaciones"), {
+      clienteId,
+      clienteNombre,
+      abogadoId: user.uid,
+      abogadoNombre,
+      fechaCreacion: serverTimestamp(),
+      ultimoMensaje: '',
+      ultimaActualizacion: serverTimestamp(),
+      estado: 'activo'
+    });
+
+    btn.textContent = '✅ Caso aceptado';
+    btn.style.background = 'var(--success)';
+    
+    // Send welcome message
+    const newConvSnap = await getDocs(convQuery);
+    if (!newConvSnap.empty) {
+      await addDoc(collection(db, "conversaciones", newConvSnap.docs[0].id, "mensajes"), {
+        text: `Hola ${clienteNombre}, soy ${abogadoNombre}. He revisado tu caso y con gusto te ayudaré. ¿Podrías contarme más detalles?`,
+        senderId: user.uid,
+        senderNombre: abogadoNombre,
+        senderTipo: 'abogado',
+        timestamp: serverTimestamp()
+      });
+    }
+
+    alert(`✅ Caso aceptado. Ya puedes chatear con ${clienteNombre} desde la sección de Mensajes.`);
+    showSection('mensajes', document.querySelectorAll('.nav-item')[3]);
+
+  } catch(error) {
+    console.error(error);
+    alert('Error al aceptar el caso. Intenta de nuevo.');
+    btn.textContent = '✅ Aceptar caso';
+    btn.disabled = false;
+  }
+}
+
+// Load real conversations for abogado
+async function cargarConversaciones(abogadoId, abogadoData) {
+  const q = query(collection(db, "conversaciones"), where("abogadoId", "==", abogadoId));
+  const snap = await getDocs(q);
+
+  if (snap.empty) return;
+
+  // Update messages section
+  const msgBody = document.querySelector('#sec-mensajes .card:first-child .card-body');
+  if (!msgBody) return;
+
+  msgBody.innerHTML = snap.docs.map(d => {
+    const c = d.data();
+    return `
+      <div class="msg-item" onclick="abrirChatAbogado('${d.id}', '${c.clienteNombre}', '${abogadoId}', '${abogadoData.nombre}')">
+        <div class="msg-avatar">${(c.clienteNombre||'C')[0]}</div>
+        <div class="msg-info">
+          <div class="msg-name">${c.clienteNombre || 'Cliente'}</div>
+          <div class="msg-preview">${c.ultimoMensaje || 'Sin mensajes aún'}</div>
+        </div>
+        <div class="msg-meta">
+          <div class="msg-time">Activo</div>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+let unsubscribeAbogadoMessages = null;
+
+window.abrirChatAbogado = function(convId, clienteNombre, abogadoId, abogadoNombre) {
+  const chatPanel = document.querySelector('#sec-mensajes .card:last-child');
+  if (!chatPanel) return;
+
+  chatPanel.querySelector('.card-header span').textContent = `Chat — ${clienteNombre}`;
+  
+  const chatArea = chatPanel.querySelector('div[style*="height:280px"]') || chatPanel.querySelector('.card-body div');
+  
+  // Replace static chat with real chat
+  chatPanel.innerHTML = `
+    <div class="card-header"><span class="card-title">Chat — ${clienteNombre}</span></div>
+    <div id="abogadoChatMessages" style="height:280px;overflow-y:auto;padding:1rem;display:flex;flex-direction:column;gap:0.75rem;"></div>
+    <div style="padding:1rem;border-top:1px solid var(--border);display:flex;gap:0.75rem;">
+      <input type="text" id="abogadoMsgInput" placeholder="Escribe un mensaje..." 
+        style="flex:1;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:0.6rem 1rem;color:var(--text);font-family:'DM Sans',sans-serif;font-size:0.85rem;outline:none;"
+        onkeydown="if(event.key==='Enter') enviarMensajeAbogado('${convId}', '${abogadoId}', '${abogadoNombre}')">
+      <button onclick="enviarMensajeAbogado('${convId}', '${abogadoId}', '${abogadoNombre}')" style="padding:0.6rem 1rem;background:var(--gold);border:none;border-radius:10px;cursor:pointer;font-size:1rem;">➤</button>
+    </div>
+  `;
+
+  if (unsubscribeAbogadoMessages) unsubscribeAbogadoMessages();
+  
+  const msgsQuery = query(collection(db, "conversaciones", convId, "mensajes"), orderBy("timestamp", "asc"));
+  unsubscribeAbogadoMessages = onSnapshot(msgsQuery, (snap) => {
+    const container = document.getElementById('abogadoChatMessages');
+    if (!container) return;
+    container.innerHTML = '';
+    snap.docs.forEach(d => {
+      const msg = d.data();
+      const isSent = msg.senderId === abogadoId;
+      container.innerHTML += `
+        <div style="align-self:${isSent?'flex-end':'flex-start'};background:${isSent?'rgba(201,168,76,0.12)':'var(--surface2)'};border:1px solid ${isSent?'rgba(201,168,76,0.2)':'var(--border)'};border-radius:12px;padding:0.65rem 0.9rem;font-size:0.85rem;max-width:80%;line-height:1.5;color:${isSent?'var(--gold-light)':'var(--text)'};">
+          ${msg.text}
+        </div>`;
+    });
+    container.scrollTop = container.scrollHeight;
+  });
+}
+
+window.enviarMensajeAbogado = async function(convId, abogadoId, abogadoNombre) {
+  const input = document.getElementById('abogadoMsgInput');
+  const text = input.value.trim();
+  if (!text) return;
+  input.value = '';
+
+  await addDoc(collection(db, "conversaciones", convId, "mensajes"), {
+    text,
+    senderId: abogadoId,
+    senderNombre: abogadoNombre,
+    senderTipo: 'abogado',
+    timestamp: serverTimestamp()
+  });
+
+  await updateDoc(doc(db, "conversaciones", convId), {
+    ultimoMensaje: text,
+    ultimaActualizacion: serverTimestamp()
+  });
+}
+</script>
+</body>
+</html>
