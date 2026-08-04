@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/png" href="favicon.png">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Abogaia — Aviso de Privacidad</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --navy: #0f2347;
+  --gold: #c9a84c;
+  --text: #1a2540;
+  --muted: #4a5980;
+  --border: #dce3f0;
+  --bg: #f8f9fc;
+  --surface: #ffffff;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.95rem;
+  line-height: 1.75;
+}
+
+/* NAV */
+nav {
+  background: var(--navy);
+  padding: 0 2rem;
+  height: 60px;
+  display: flex; align-items: center; justify-content: space-between;
+  position: sticky; top: 0; z-index: 100;
+}
+
+.nav-logo {
+  display: flex; align-items: center; gap: 0.6rem;
+  text-decoration: none;
+}
+
+.logo-icon {
+  width: 32px; height: 32px;
+  background: linear-gradient(135deg, var(--gold), #8a6020);
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Playfair Display', serif;
+  font-weight: 700; color: #0f2347; font-size: 0.9rem;
+}
+
+.logo-name {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.3rem; color: var(--gold); font-weight: 700;
+}
+
+.nav-back {
+  font-size: 0.82rem;
+  color: rgba(255,255,255,0.6);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.nav-back:hover { color: var(--gold); }
+
+/* HERO */
+.doc-hero {
+  background: linear-gradient(135deg, var(--navy) 0%, #1a3a6b 100%);
+  padding: 3.5rem 2rem;
+  text-align: center;
+}
+
+.doc-badge {
+  display: inline-block;
+  font-size: 0.72rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--gold);
+  background: rgba(201,168,76,0.12);
+  border: 1px solid rgba(201,168,76,0.25);
+  padding: 0.3rem 0.9rem;
+  border-radius: 100px;
+  margin-bottom: 1rem;
+}
+
+.doc-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 2rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin-bottom: 0.5rem;
+}
+
+.doc-meta {
+  font-size: 0.82rem;
+  color: rgba(255,255,255,0.5);
+}
+
+/* LAYOUT */
+.layout {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 3rem 2rem;
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  gap: 3rem;
+  align-items: start;
+}
+
+/* INDEX */
+.index-box {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 1.25rem;
+  position: sticky;
+  top: 80px;
+}
+
+.index-title {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--muted);
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+}
+
+.index-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.index-list a {
+  font-size: 0.8rem;
+  color: var(--muted);
+  text-decoration: none;
+  padding: 0.35rem 0.5rem;
+  border-radius: 6px;
+  display: block;
+  transition: all 0.2s;
+  line-height: 1.4;
+}
+
+.index-list a:hover {
+  color: var(--navy);
+  background: rgba(15,35,71,0.05);
+}
+
+/* CONTENT */
+.doc-content {}
+
+.doc-section {
+  margin-bottom: 2.5rem;
+  padding-bottom: 2.5rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.doc-section:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+}
+
+.section-num {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: var(--gold);
+  font-weight: 600;
+  margin-bottom: 0.4rem;
+}
+
+.section-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--navy);
+  margin-bottom: 1rem;
+}
+
+.doc-content p {
+  color: var(--text);
+  margin-bottom: 0.9rem;
+}
+
+.doc-content p:last-child { margin-bottom: 0; }
+
+.doc-list {
+  list-style: none;
+  margin: 0.75rem 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.doc-list li {
+  display: flex;
+  gap: 0.75rem;
+  align-items: flex-start;
+  font-size: 0.9rem;
+  color: var(--text);
+}
+
+.doc-list li::before {
+  content: '•';
+  color: var(--gold);
+  font-weight: 700;
+  flex-shrink: 0;
+  margin-top: 0.1rem;
+}
+
+.highlight-box {
+  background: rgba(15,35,71,0.04);
+  border-left: 3px solid var(--navy);
+  border-radius: 0 10px 10px 0;
+  padding: 1rem 1.25rem;
+  margin: 1rem 0;
+  font-size: 0.88rem;
+  color: var(--muted);
+  line-height: 1.7;
+}
+
+.gold-box {
+  background: rgba(201,168,76,0.08);
+  border: 1px solid rgba(201,168,76,0.2);
+  border-radius: 10px;
+  padding: 1rem 1.25rem;
+  margin: 1rem 0;
+  font-size: 0.88rem;
+  line-height: 1.7;
+}
+
+/* FOOTER */
+footer {
+  background: var(--navy);
+  padding: 1.5rem 2rem;
+  text-align: center;
+  font-size: 0.78rem;
+  color: rgba(255,255,255,0.45);
+}
+
+footer a { color: var(--gold); text-decoration: none; margin: 0 0.5rem; }
+
+@media (max-width: 768px) {
+  .layout { grid-template-columns: 1fr; }
+  .index-box { position: static; }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-logo" href="landing.html">
+    <div class="logo-icon">A</div>
+    <span class="logo-name">Abogaia</span>
+  </a>
+  <a class="nav-back" href="landing.html">← Volver al inicio</a>
+</nav>
+
+<div class="doc-hero">
+  <div class="doc-badge">Documento legal</div>
+  <h1 class="doc-title">Aviso de Privacidad</h1>
+  <p class="doc-meta">Última actualización: junio 2026 · Conforme a la LFPDPPP</p>
+</div>
+
+<div class="layout">
+
+  <!-- ÍNDICE -->
+  <aside class="index-box">
+    <div class="index-title">Contenido</div>
+    <ul class="index-list">
+      <li><a href="#responsable">1. Responsable</a></li>
+      <li><a href="#datos">2. Datos que recopilamos</a></li>
+      <li><a href="#finalidades">3. Finalidades</a></li>
+      <li><a href="#transferencias">4. Transferencias</a></li>
+      <li><a href="#derechos">5. Derechos ARCO</a></li>
+      <li><a href="#cookies">6. Cookies</a></li>
+      <li><a href="#menores">7. Menores de edad</a></li>
+      <li><a href="#cambios">8. Cambios al aviso</a></li>
+      <li><a href="#contacto">9. Contacto</a></li>
+    </ul>
+  </aside>
+
+  <!-- CONTENIDO -->
+  <div class="doc-content">
+
+    <div class="gold-box">
+      En Abogaia nos comprometemos a proteger tu privacidad. Este aviso describe cómo recopilamos, usamos y protegemos tu información personal, conforme a la <strong>Ley Federal de Protección de Datos Personales en Posesión de los Particulares (LFPDPPP)</strong> y su Reglamento.
+    </div>
+
+    <!-- 1 -->
+    <div class="doc-section" id="responsable">
+      <div class="section-num">Sección 01</div>
+      <h2 class="section-title">Responsable del tratamiento de datos</h2>
+      <p><strong>Abogaia</strong> (en adelante "la Plataforma"), con dominio en <strong>abogaiamx.com</strong>, es responsable del tratamiento de tus datos personales.</p>
+      <p>Para cualquier asunto relacionado con tu privacidad puedes contactarnos en:</p>
+      <div class="highlight-box">
+        📧 privacidad@abogaiamx.com<br>
+        🌐 abogaiamx.com<br>
+        📍 México
+      </div>
+    </div>
+
+    <!-- 2 -->
+    <div class="doc-section" id="datos">
+      <div class="section-num">Sección 02</div>
+      <h2 class="section-title">Datos personales que recopilamos</h2>
+
+      <p><strong>Para abogados registrados:</strong></p>
+      <ul class="doc-list">
+        <li>Nombre completo, CURP y RFC</li>
+        <li>Cédula profesional y datos de identidad profesional</li>
+        <li>Correo electrónico y teléfono celular</li>
+        <li>Foto de perfil</li>
+        <li>Especialidad, años de experiencia y estados donde ejerce</li>
+        <li>Datos de pago (procesados de forma segura por terceros certificados)</li>
+        <li>Historial de casos y calificaciones en la plataforma</li>
+      </ul>
+
+      <p style="margin-top:1rem;"><strong>Para clientes:</strong></p>
+      <ul class="doc-list">
+        <li>Correo electrónico (opcional)</li>
+        <li>Descripción del problema legal ingresado voluntariamente</li>
+        <li>Estado de la República donde se encuentra</li>
+        <li>Datos de contacto cuando decide conectarse con un abogado</li>
+      </ul>
+
+      <div class="highlight-box">
+        <strong>Datos sensibles:</strong> La descripción de tu situación legal puede contener información sensible. Esta información es tratada con estricta confidencialidad y solo es compartida con el abogado que aceptes para tu caso.
+      </div>
+    </div>
+
+    <!-- 3 -->
+    <div class="doc-section" id="finalidades">
+      <div class="section-num">Sección 03</div>
+      <h2 class="section-title">Finalidades del tratamiento</h2>
+
+      <p><strong>Finalidades primarias</strong> (necesarias para el servicio):</p>
+      <ul class="doc-list">
+        <li>Crear y administrar tu cuenta en la plataforma</li>
+        <li>Conectar clientes con abogados mediante inteligencia artificial</li>
+        <li>Procesar pagos de suscripción para abogados</li>
+        <li>Verificar la cédula profesional de abogados registrados</li>
+        <li>Facilitar la comunicación entre clientes y abogados</li>
+        <li>Garantizar la seguridad e integridad de la plataforma</li>
+      </ul>
+
+      <p style="margin-top:1rem;"><strong>Finalidades secundarias</strong> (puedes oponerte):</p>
+      <ul class="doc-list">
+        <li>Enviarte información sobre nuevas funcionalidades de Abogaia</li>
+        <li>Realizar encuestas de satisfacción</li>
+        <li>Analizar el uso de la plataforma para mejorar nuestros servicios</li>
+        <li>Enviarte comunicaciones de marketing relacionadas con servicios legales</li>
+      </ul>
+
+      <div class="highlight-box">
+        Si no deseas que tus datos sean utilizados para finalidades secundarias, envíanos un correo a <strong>privacidad@abogaiamx.com</strong> indicando tu oposición.
+      </div>
+    </div>
+
+    <!-- 4 -->
+    <div class="doc-section" id="transferencias">
+      <div class="section-num">Sección 04</div>
+      <h2 class="section-title">Transferencia de datos</h2>
+
+      <p>Abogaia podrá compartir tus datos personales en los siguientes casos:</p>
+      <ul class="doc-list">
+        <li><strong>Con abogados registrados:</strong> Cuando un cliente decide conectarse con un abogado, sus datos de contacto son compartidos con dicho abogado para atender el caso.</li>
+        <li><strong>Procesadores de pago:</strong> Utilizamos servicios de pago certificados (como Stripe o Conekta) que cumplen con estándares PCI-DSS para procesar cobros de suscripción.</li>
+        <li><strong>Autoridades competentes:</strong> Cuando sea requerido por ley, orden judicial o autoridad gubernamental competente.</li>
+        <li><strong>Proveedores de tecnología:</strong> Servicios de hosting, análisis y seguridad que actúan como encargados del tratamiento bajo contrato de confidencialidad.</li>
+      </ul>
+
+      <p>Abogaia <strong>no vende, alquila ni comercializa</strong> tus datos personales con terceros para fines publicitarios.</p>
+    </div>
+
+    <!-- 5 -->
+    <div class="doc-section" id="derechos">
+      <div class="section-num">Sección 05</div>
+      <h2 class="section-title">Derechos ARCO</h2>
+
+      <p>Conforme a la LFPDPPP, tienes derecho a:</p>
+      <ul class="doc-list">
+        <li><strong>Acceso:</strong> Conocer qué datos personales tenemos sobre ti y cómo los usamos</li>
+        <li><strong>Rectificación:</strong> Corregir tus datos cuando sean inexactos o incompletos</li>
+        <li><strong>Cancelación:</strong> Solicitar que eliminemos tus datos de nuestros sistemas</li>
+        <li><strong>Oposición:</strong> Oponerte al tratamiento de tus datos para finalidades específicas</li>
+      </ul>
+
+      <div class="gold-box">
+        Para ejercer tus derechos ARCO envía un correo a <strong>privacidad@abogaiamx.com</strong> con el asunto "Derechos ARCO" indicando tu nombre completo, correo registrado y el derecho que deseas ejercer. Responderemos en un plazo máximo de <strong>20 días hábiles</strong>.
+      </div>
+    </div>
+
+    <!-- 6 -->
+    <div class="doc-section" id="cookies">
+      <div class="section-num">Sección 06</div>
+      <h2 class="section-title">Uso de cookies</h2>
+      <p>Abogaia utiliza cookies y tecnologías similares para:</p>
+      <ul class="doc-list">
+        <li>Mantener tu sesión activa mientras navegas en la plataforma</li>
+        <li>Recordar tus preferencias de usuario</li>
+        <li>Analizar el tráfico y comportamiento en la plataforma (Google Analytics)</li>
+        <li>Garantizar la seguridad de tu cuenta</li>
+      </ul>
+      <p>Puedes deshabilitar las cookies desde la configuración de tu navegador, aunque esto puede afectar el funcionamiento de algunas funciones de la plataforma.</p>
+    </div>
+
+    <!-- 7 -->
+    <div class="doc-section" id="menores">
+      <div class="section-num">Sección 07</div>
+      <h2 class="section-title">Menores de edad</h2>
+      <p>Abogaia no está dirigida a menores de 18 años. No recopilamos intencionalmente datos personales de menores. Si eres padre, madre o tutor y crees que un menor ha proporcionado datos en nuestra plataforma, contáctanos de inmediato a <strong>privacidad@abogaiamx.com</strong> para eliminar dicha información.</p>
+    </div>
+
+    <!-- 8 -->
+    <div class="doc-section" id="cambios">
+      <div class="section-num">Sección 08</div>
+      <h2 class="section-title">Cambios al aviso de privacidad</h2>
+      <p>Abogaia se reserva el derecho de modificar este aviso de privacidad en cualquier momento. Cualquier cambio será notificado mediante:</p>
+      <ul class="doc-list">
+        <li>Un aviso visible en la plataforma</li>
+        <li>Un correo electrónico a los usuarios registrados</li>
+        <li>La actualización de la fecha de "última modificación" en este documento</li>
+      </ul>
+      <p>El uso continuado de la plataforma después de la notificación de cambios implica la aceptación del aviso actualizado.</p>
+    </div>
+
+    <!-- 9 -->
+    <div class="doc-section" id="contacto">
+      <div class="section-num">Sección 09</div>
+      <h2 class="section-title">Contacto</h2>
+      <p>Para cualquier duda, queja o aclaración sobre el tratamiento de tus datos personales:</p>
+      <div class="highlight-box">
+        📧 <strong>privacidad@abogaiamx.com</strong><br>
+        🌐 <strong>abogaiamx.com</strong><br><br>
+        También puedes presentar una queja ante el <strong>Instituto Nacional de Transparencia, Acceso a la Información y Protección de Datos Personales (INAI)</strong> en <a href="https://www.inai.org.mx" target="_blank" style="color:var(--navy);">www.inai.org.mx</a>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<footer>
+  <div>Abogaia © 2026 · México · Conforme a la LFPDPPP</div>
+  <div style="margin-top:0.5rem;">
+    <a href="landing.html">Inicio</a>
+    <a href="terminos.html">Términos y Condiciones</a>
+    <a href="login.html">Iniciar sesión</a>
+  </div>
+</footer>
+
+</body>
+</html>
