@@ -778,256 +778,93 @@ let selectedArea = 'seguros';
 let isLoading = false;
 let conversationHistory = [];
 
-const MOCK_LAWYERS = {
-  seguros: [
-    { name: "Lic. Patricia Morales", initials: "PM", specialty: "Seguros · Reclamaciones AXA, GNP, MAPFRE", desc: "15 años reclamando pagos negados. Especialista en CONDUSEF y litigio contra aseguradoras. Ha ganado más de 200 casos.", rating: "★★★★★", cases: "214 casos ganados" },
-    { name: "Lic. Roberto Suárez", initials: "RS", specialty: "Seguros · Daños y responsabilidad civil", desc: "Ex-ajustador de seguros reconvertido en abogado. Conoce los trucos internos de las aseguradoras.", rating: "★★★★☆", cases: "128 casos ganados" },
-  ],
-  penal: [
-    { name: "Lic. Carlos Vega", initials: "CV", specialty: "Derecho Penal · Defensa y amparos", desc: "Defensor de oficio reconvertido. Especialista en el nuevo sistema acusatorio. Casos de delitos del fuero común y federal.", rating: "★★★★★", cases: "89 casos ganados" },
-    { name: "Lic. Sofía Ramírez", initials: "SR", specialty: "Derecho Penal · Víctimas y coadyuvancia", desc: "Representación de víctimas del delito. Especialista en seguimiento de carpetas de investigación.", rating: "★★★★☆", cases: "67 casos resueltos" },
-  ],
-  laboral: [
-    { name: "Lic. Eduardo Lara", initials: "EL", specialty: "Derecho Laboral · IMSS y despidos", desc: "Recuperación de liquidaciones, demandas ante Juntas de Conciliación. 12 años de experiencia laboral.", rating: "★★★★★", cases: "301 casos ganados" },
-    { name: "Lic. Ana González", initials: "AG", specialty: "Laboral · Acoso y discriminación laboral", desc: "Defensora de derechos laborales. Especialista en acoso, discriminación y NOM-035.", rating: "★★★★☆", cases: "95 casos resueltos" },
-  ],
-  familiar: [
-    { name: "Lic. Mariana Torres", initials: "MT", specialty: "Derecho Familiar · Divorcios y custodia", desc: "Procesos de divorcio incausado, pensión alimenticia y custodia compartida. Trato humano y discreto.", rating: "★★★★★", cases: "178 casos resueltos" },
-    { name: "Lic. Jorge Mendoza", initials: "JM", specialty: "Familiar · Adopciones y tutelas", desc: "Especialista en derecho sucesorio y familiar. Adopciones nacionales e internacionales.", rating: "★★★★☆", cases: "112 casos resueltos" },
-  ],
-  default: [
-    { name: "Lic. Laura Hidalgo", initials: "LH", specialty: "Derecho General · Asesoría integral", desc: "Abogada generalista con red de especialistas. Te orienta al área correcta y puede representarte en múltiples materias.", rating: "★★★★★", cases: "500+ consultas" },
-    { name: "Lic. Miguel Ángel Ruiz", initials: "MR", specialty: "Litigios · Todas las materias", desc: "20 años de experiencia en múltiples áreas del derecho mexicano. Excelente para casos complejos.", rating: "★★★★☆", cases: "350+ casos" },
-  ]
+const AREA_MAP = {
+  seguros: 'Seguros', penal: 'Penal', laboral: 'Laboral',
+  familiar: 'Familiar', civil: 'Civil', mercantil: 'Mercantil',
+  amparo: 'Amparo', otro: null
 };
 
-function selectArea(el, area) {
-  document.querySelectorAll('.area-pill').forEach(p => p.classList.remove('active'));
-  el.classList.add('active');
-  selectedArea = area;
-  document.getElementById('areaSelect').value = area;
-}
-
-function switchTab(tab) {
-  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-  document.getElementById('chatPanel').style.display = tab === 'chat' ? 'flex' : 'none';
-  document.getElementById('formPanel').classList.toggle('visible', tab === 'form');
-  event.target.classList.add('active');
-}
-
-function autoResize(el) {
-  el.style.height = 'auto';
-  el.style.height = Math.min(el.scrollHeight, 120) + 'px';
-}
-
-function handleKey(e) {
-  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
-}
-
-function addMessage(role, content) {
-  const msgs = document.getElementById('messages');
-  const div = document.createElement('div');
-  div.className = `msg ${role}`;
-  div.innerHTML = `
-    <div class="avatar ${role === 'ai' ? 'ai' : 'user-av'}">${role === 'ai' ? 'L' : '👤'}</div>
-    <div class="bubble">${content}</div>
-  `;
-  msgs.appendChild(div);
-  msgs.scrollTop = msgs.scrollHeight;
-}
-
-function showTyping() {
-  const msgs = document.getElementById('messages');
-  const div = document.createElement('div');
-  div.className = 'msg ai';
-  div.id = 'typing';
-  div.innerHTML = `
-    <div class="avatar ai">L</div>
-    <div class="bubble typing"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
-  `;
-  msgs.appendChild(div);
-  msgs.scrollTop = msgs.scrollHeight;
-}
-
-function removeTyping() {
-  const t = document.getElementById('typing');
-  if (t) t.remove();
-}
-
-async function sendMessage() {
-  if (isLoading) return;
-  const input = document.getElementById('chatInput');
-  const text = input.value.trim();
-  if (!text) return;
-
-  addMessage('user', text);
-  conversationHistory.push({ role: 'user', content: text });
-  input.value = '';
-  input.style.height = 'auto';
-  isLoading = true;
-  document.getElementById('sendBtn').disabled = true;
-  showTyping();
-
-  try {
-    const response = await fetch('/api/chat', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-6',
-        max_tokens: 1000,
-        system: `Eres AbogaIA, el asistente de inteligencia artificial de Abogaia, una plataforma mexicana que conecta personas con abogados.
-
-Tu rol: Escucha el problema del usuario, hazle preguntas empáticas y claras para entender su situación, y después de 2-3 turnos, analiza su caso y muestra una recomendación en formato especial.
-
-Áreas: seguros/reclamaciones, penal, laboral, familiar, civil, mercantil, amparo.
-
-IMPORTANTE: Cuando ya tengas suficiente información (después de 1-2 preguntas), termina tu respuesta con este bloque JSON exacto:
-LEXAI_RESULT:{"area":"laboral","urgencia":"normal","resumen":"Despido injustificado sin liquidación correcta","tags":["liquidación","despido","IMSS"]}
-
-Solo incluye el LEXAI_RESULT cuando ya tengas suficiente info para recomendar. Antes de eso, haz preguntas breves y empáticas.
-Responde siempre en español mexicano, de forma cálida y profesional. Sé conciso.`,
-        messages: conversationHistory
-      })
-    });
-
-    const data = await response.json();
-    
-    // Check for API errors
-    if (data.error) {
-      removeTyping();
-      const errorMsg = typeof data.error === 'string' ? data.error : JSON.stringify(data.error);
-      addMessage('ai', `Error: ${errorMsg}`);
-      isLoading = false;
-      document.getElementById('sendBtn').disabled = false;
-      return;
-    }
-
-    if (!data.content || !data.content[0]) {
-      removeTyping();
-      addMessage('ai', 'Hubo un error al procesar tu consulta. Por favor intenta de nuevo.');
-      isLoading = false;
-      document.getElementById('sendBtn').disabled = false;
-      return;
-    }
-
-    const rawText = data.content[0].text;
-    removeTyping();
-
-    if (rawText.includes('LEXAI_RESULT:')) {
-      const parts = rawText.split('LEXAI_RESULT:');
-      const visibleText = parts[0].trim();
-      const jsonStr = parts[1].trim();
-      const result = JSON.parse(jsonStr);
-
-      if (visibleText) addMessage('ai', visibleText);
-
-      // Show result card
-      const msgs = document.getElementById('messages');
-      const resDiv = document.createElement('div');
-      resDiv.className = 'msg ai';
-      resDiv.innerHTML = `
-        <div class="avatar ai">L</div>
-        <div class="result-card">
-          <div class="result-title">📋 Análisis de tu caso</div>
-          <p style="font-size:0.85rem;color:#b0a890;line-height:1.5;">${result.resumen}</p>
-          <div class="result-tags">
-            <span class="tag">📂 ${result.area}</span>
-            ${result.tags.map(t => `<span class="tag">${t}</span>`).join('')}
-            <span class="tag">⏱ ${result.urgencia}</span>
-          </div>
-        </div>
-      `;
-      msgs.appendChild(resDiv);
-      msgs.scrollTop = msgs.scrollHeight;
-
-      conversationHistory.push({ role: 'assistant', content: visibleText || 'Analicé tu caso.' });
-      selectedArea = result.area;
-      setTimeout(() => showLawyers(result.area, result.resumen), 600);
-    } else {
-      addMessage('ai', rawText);
-      conversationHistory.push({ role: 'assistant', content: rawText });
-    }
-  } catch (e) {
-    removeTyping();
-    addMessage('ai', 'Hubo un error al procesar tu consulta. Por favor intenta de nuevo.');
-  }
-
-  isLoading = false;
-  document.getElementById('sendBtn').disabled = false;
-}
-
-async function submitForm() {
-  const area = document.getElementById('areaSelect').value;
-  const state = document.getElementById('stateSelect').value;
-  const desc = document.getElementById('formDesc').value.trim();
-  const goal = document.getElementById('goalSelect').value;
-  const urgency = document.getElementById('urgencySelect').value;
-
-  if (!area || !desc) {
-    alert('Por favor selecciona el área legal y describe tu situación.');
-    return;
-  }
-
-  const btn = document.getElementById('submitBtn');
-  btn.disabled = true;
-  btn.textContent = 'Analizando tu caso...';
-
-  try {
-    const response = await fetch('/api/chat', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-6',
-        max_tokens: 1000,
-        system: 'Eres AbogaIA. Analiza el caso legal descrito y responde ÚNICAMENTE con un JSON válido (sin backticks, sin texto extra) con: {"resumen": "resumen breve del caso", "area": "área legal principal", "subtipo": "descripción específica", "fortaleza": "Alta/Media/Baja", "tags": ["tag1","tag2","tag3"], "consejo": "un consejo breve y práctico para el usuario"}',
-        messages: [{ role: 'user', content: `Área: ${area}\nEstado: ${state}\nUrgencia: ${urgency}\nSituación: ${desc}\nObjetivo: ${goal}` }]
-      })
-    });
-    const data = await response.json();
-    const result = JSON.parse(data.content[0].text);
-    showLawyers(area, result.resumen, result);
-  } catch(e) {
-    showLawyers(area, desc);
-  }
-
-  btn.disabled = false;
-  btn.textContent = 'Analizar mi caso y mostrar abogados →';
-}
-
-function showLawyers(area, summary, analysis) {
+async function showLawyers(area, summary, analysis) {
   const section = document.getElementById('lawyersSection');
   const grid = document.getElementById('lawyersGrid');
   const sub = document.getElementById('lawyersSub');
 
-  const lawyers = MOCK_LAWYERS[area] || MOCK_LAWYERS['default'];
-
-  sub.textContent = summary ? `"${summary.slice(0, 80)}${summary.length > 80 ? '...' : ''}"` : 'Basado en el análisis de tu situación';
+  sub.textContent = summary ? '"' + summary.slice(0, 80) + (summary.length > 80 ? '...' : '') + '"' : 'Basado en el análisis de tu situación';
 
   let extraInfo = '';
   if (analysis?.consejo) {
-    extraInfo = `<div style="background:rgba(59,111,255,0.08);border:1px solid rgba(59,111,255,0.2);border-radius:10px;padding:0.9rem 1rem;margin-bottom:1rem;font-size:0.85rem;color:#a0b4ff;line-height:1.6;">
-      💡 <strong>Consejo LexAI:</strong> ${analysis.consejo}
-    </div>`;
+    extraInfo = '<div style="background:rgba(59,111,255,0.08);border:1px solid rgba(59,111,255,0.2);border-radius:10px;padding:0.9rem 1rem;margin-bottom:1rem;font-size:0.85rem;color:#a0b4ff;line-height:1.6;">💡 <strong>Consejo AbogaIA:</strong> ' + analysis.consejo + '</div>';
   }
 
-  grid.innerHTML = extraInfo + lawyers.map((l, i) => `
-    <div class="lawyer-card" style="animation-delay:${i*0.1}s">
-      <div class="lawyer-avatar">${l.initials}</div>
-      <div class="lawyer-info">
-        <div class="lawyer-name">${l.name}</div>
-        <div class="lawyer-specialty">${l.specialty}</div>
-        <div class="lawyer-desc">${l.desc}</div>
-        <div class="lawyer-meta">
-          <span class="lawyer-rating">${l.rating}</span>
-          <span class="lawyer-cases">📂 ${l.cases}</span>
-        </div>
-      </div>
-      <button class="contact-btn" onclick="alert('¡Próximamente! Esta funcionalidad conectará al abogado contigo directamente.')">Contactar</button>
-    </div>
-  `).join('');
-
+  grid.innerHTML = extraInfo + '<div style="text-align:center;padding:1.5rem;color:var(--muted2);font-size:0.85rem;">Buscando abogados disponibles...</div>';
   section.classList.add('visible');
   section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+  try {
+    const { initializeApp, getApps } = await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js");
+    const { getFirestore, collection, getDocs } = await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js");
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyCn08o2CClY1yEnK686lZ662E4_3kDQWrM",
+      authDomain: "abogaia-2236.firebaseapp.com",
+      projectId: "abogaia-2236",
+      storageBucket: "abogaia-2236.firebasestorage.app",
+      messagingSenderId: "614300759506",
+      appId: "1:614300759506:web:a92048cb2d20b2ab89840b"
+    };
+
+    const apps = getApps();
+    const firebaseApp = apps.length ? apps[0] : initializeApp(firebaseConfig);
+    const db = getFirestore(firebaseApp);
+    const snap = await getDocs(collection(db, "abogados"));
+    const allAbogados = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+
+    const keyword = AREA_MAP[area];
+    let filtrados = keyword
+      ? allAbogados.filter(a => {
+          const specs = Array.isArray(a.especialidades) ? a.especialidades.join(' ') : (a.especialidades || '');
+          return specs.toLowerCase().includes(keyword.toLowerCase());
+        })
+      : allAbogados;
+
+    if (filtrados.length === 0) filtrados = allAbogados;
+
+    if (filtrados.length === 0) {
+      grid.innerHTML = extraInfo + '<div style="text-align:center;padding:2rem;color:var(--muted2);"><div style="font-size:2rem;margin-bottom:0.75rem;">⚖️</div><div style="font-weight:500;margin-bottom:0.4rem;">Sin abogados disponibles aún</div><div style="font-size:0.82rem;">Estamos creciendo nuestra red. Intenta más tarde.</div></div>';
+      return;
+    }
+
+    grid.innerHTML = extraInfo + filtrados.map((a, i) => {
+      const nombre = 'Lic. ' + (a.nombre || '') + ' ' + (a.apellidos || '');
+      const specs = Array.isArray(a.especialidades) ? a.especialidades.slice(0,2).join(' · ') : (a.especialidades || 'General');
+      const estados = Array.isArray(a.estados) ? a.estados[0] : (a.estados || 'México');
+      const initials = ((a.nombre||'A')[0] + (a.apellidos||'B')[0]).toUpperCase();
+      return '<div class="lawyer-card" style="animation-delay:' + (i*0.1) + 's"><div class="lawyer-avatar">' + initials + '</div><div class="lawyer-info"><div class="lawyer-name">' + nombre + '</div><div class="lawyer-specialty">' + specs + '</div><div class="lawyer-desc">' + (a.descripcion || 'Abogado verificado en Abogaia.') + '</div><div class="lawyer-meta"><span>📍 ' + estados + '</span><span style="margin-left:0.75rem">✅ Verificado</span></div></div><button class="contact-btn" onclick="contactarAbogado('" + a.id + "', '" + nombre.trim() + "')">Contactar</button></div>';
+    }).join('');
+
+  } catch(e) {
+    console.error(e);
+    grid.innerHTML = extraInfo + '<div style="text-align:center;padding:1.5rem;color:var(--muted2);font-size:0.85rem;">Error al cargar abogados. Intenta de nuevo.</div>';
+  }
+}
+
+async function contactarAbogado(abogadoId, abogadoNombre) {
+  const { getApps, initializeApp } = await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js");
+  const { getAuth } = await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js");
+  const firebaseConfig = {
+    apiKey: "AIzaSyCn08o2CClY1yEnK686lZ662E4_3kDQWrM",
+    authDomain: "abogaia-2236.firebaseapp.com",
+    projectId: "abogaia-2236",
+    storageBucket: "abogaia-2236.firebasestorage.app",
+    messagingSenderId: "614300759506",
+    appId: "1:614300759506:web:a92048cb2d20b2ab89840b"
+  };
+  const apps = getApps();
+  const firebaseApp = apps.length ? apps[0] : initializeApp(firebaseConfig);
+  const auth = getAuth(firebaseApp);
+  const user = auth.currentUser;
+  if (!user) { window.location.href = 'login.html?tipo=cliente'; return; }
+  window.location.href = 'panel-cliente.html';
 }
 </script>
 </body>
